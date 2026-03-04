@@ -8,8 +8,9 @@ let revealedAnswers = new Set();
 
 const QUALIFY_SCORE = 150;
 
+
 /* -----------------------------
-   LOAD ROUND DATA
+LOAD ROUND DATA
 ------------------------------*/
 document.getElementById("roundSelector").addEventListener("change", async (e) => {
 
@@ -29,12 +30,19 @@ document.getElementById("roundSelector").addEventListener("change", async (e) =>
         const response = await fetch(url);
         const data = await response.json();
 
-        // LOAD ALL QUESTIONS FROM ALL SETS
         allQuestions = [];
 
-        data.sets.forEach(set => {
-            allQuestions = allQuestions.concat(set.questions);
-        });
+        if (data.sets) {
+            data.sets.forEach(set => {
+                allQuestions = allQuestions.concat(set.questions);
+            });
+        }
+
+        if (data.matches) {
+            data.matches.forEach(match => {
+                allQuestions = allQuestions.concat(match.questions);
+            });
+        }
 
         currentRound = round;
         currentIndex = 0;
@@ -45,31 +53,41 @@ document.getElementById("roundSelector").addEventListener("change", async (e) =>
         displayQuestion(currentIndex);
 
     } catch (error) {
+
         console.error("Error loading round:", error);
+
     }
 
 });
 
+
 /* -----------------------------
-   DISPLAY QUESTION
+DISPLAY QUESTION
 ------------------------------*/
 function displayQuestion(index) {
 
     if (!allQuestions.length) return;
-
     if (index < 0 || index >= allQuestions.length) return;
 
     currentQuestion = allQuestions[index];
 
     const questionText = document.getElementById("questionText");
+
     if (questionText) {
+
         questionText.textContent = currentQuestion.question;
+
+        socket.emit("broadcastCurrentQuestion", currentQuestion);
+
     }
 
     const answersList = document.getElementById("answersList");
+
     if (!answersList) return;
 
     answersList.innerHTML = "";
+
+    if (!currentQuestion.answers) return;
 
     currentQuestion.answers.forEach((answer) => {
 
@@ -77,28 +95,33 @@ function displayQuestion(index) {
 
         const isRevealed = revealedAnswers.has(answer.answer);
 
+        const safeAnswer = answer.answer.replace(/'/g, "\\'");
+
         const row = document.createElement("div");
+
         row.className = "answer-row";
 
         row.innerHTML = `
-            <div class="answer-text">
-                ${answer.answer}
-                <span class="answer-weight">(${answer.weight})</span>
-            </div>
+        <div class="answer-text">
+        ${answer.answer}
+        <span class="answer-weight">(${answer.weight})</span>
+        </div>
 
-            <div class="answer-buttons">
-                <button class="btn btn-small btn-team-a"
-                    onclick="revealAnswer('A','${answer.answer}',${answer.weight})"
-                    ${isRevealed ? "disabled" : ""}>
-                    A
-                </button>
+        <div class="answer-buttons">
 
-                <button class="btn btn-small btn-team-b"
-                    onclick="revealAnswer('B','${answer.answer}',${answer.weight})"
-                    ${isRevealed ? "disabled" : ""}>
-                    B
-                </button>
-            </div>
+        <button class="btn btn-small btn-team-a"
+        onclick="revealAnswer('A','${safeAnswer}',${answer.weight})"
+        ${isRevealed ? "disabled" : ""}>
+        A
+        </button>
+
+        <button class="btn btn-small btn-team-b"
+        onclick="revealAnswer('B','${safeAnswer}',${answer.weight})"
+        ${isRevealed ? "disabled" : ""}>
+        B
+        </button>
+
+        </div>
         `;
 
         answersList.appendChild(row);
@@ -107,41 +130,47 @@ function displayQuestion(index) {
 
 }
 
+
 /* -----------------------------
-   REVEAL ANSWER
+REVEAL ANSWER
 ------------------------------*/
 function revealAnswer(team, answerText, weight) {
+
+    if (revealedAnswers.has(answerText)) return;
 
     revealedAnswers.add(answerText);
 
     socket.emit("revealAnswer", {
+
         team: team,
+
         answer: {
             answer: answerText,
             weight: weight
         }
+
     });
 
     displayQuestion(currentIndex);
+
 }
 
+
 /* -----------------------------
-   TEAM UPDATE
+TEAM UPDATE
 ------------------------------*/
 function updateTeams() {
 
     const teamA = document.getElementById("teamA").value || "Team A";
     const teamB = document.getElementById("teamB").value || "Team B";
 
-    socket.emit("updateTeams", {
-        teamA: teamA,
-        teamB: teamB
-    });
+    socket.emit("updateTeams", { teamA, teamB });
 
 }
 
+
 /* -----------------------------
-   RESET GAME
+RESET GAME
 ------------------------------*/
 function resetGame() {
 
@@ -156,8 +185,9 @@ function resetGame() {
 
 }
 
+
 /* -----------------------------
-   SCORE CONTROL
+SCORE CONTROL
 ------------------------------*/
 function addScore(team) {
 
@@ -179,19 +209,25 @@ function deductScore(team) {
 
 }
 
+
 /* -----------------------------
-   STRIKES
+STRIKES
 ------------------------------*/
 function addStrike(team) {
+
     socket.emit("addStrike", { team });
+
 }
 
 function resetStrikes() {
+
     socket.emit("resetStrikes");
+
 }
 
+
 /* -----------------------------
-   QUESTION NAVIGATION
+QUESTION NAVIGATION
 ------------------------------*/
 function nextQuestion() {
 
@@ -200,9 +236,11 @@ function nextQuestion() {
     if (currentIndex < allQuestions.length - 1) {
 
         currentIndex++;
+
         revealedAnswers.clear();
 
         socket.emit("resetStrikes");
+        socket.emit("clearBoard");
 
         displayQuestion(currentIndex);
 
@@ -217,9 +255,11 @@ function previousQuestion() {
     if (currentIndex > 0) {
 
         currentIndex--;
+
         revealedAnswers.clear();
 
         socket.emit("resetStrikes");
+        socket.emit("clearBoard");
 
         displayQuestion(currentIndex);
 
@@ -227,8 +267,9 @@ function previousQuestion() {
 
 }
 
+
 /* -----------------------------
-   SERVER STATE UPDATE
+SERVER STATE UPDATE
 ------------------------------*/
 socket.on("stateUpdate", (state) => {
 
@@ -239,21 +280,35 @@ socket.on("stateUpdate", (state) => {
 
     if (!qualifyMessage) return;
 
-    if (scoreA >= QUALIFY_SCORE) {
+    if (scoreA >= QUALIFY_SCORE && scoreB >= QUALIFY_SCORE) {
+
         qualifyMessage.textContent =
-            `${state.teamA.name} qualifies for the next round!`;
+            `${state.teamA.name} and ${state.teamB.name} both qualify!`;
+
     }
 
-    if (scoreB >= QUALIFY_SCORE) {
+    else if (scoreA >= QUALIFY_SCORE) {
+
+        qualifyMessage.textContent =
+            `${state.teamA.name} qualifies for the next round!`;
+
+    }
+
+    else if (scoreB >= QUALIFY_SCORE) {
+
         qualifyMessage.textContent =
             `${state.teamB.name} qualifies for the next round!`;
+
     }
 
 });
 
+
 /* -----------------------------
-   SOCKET CONNECT
+SOCKET CONNECT
 ------------------------------*/
 socket.on("connect", () => {
+
     console.log("Host connected to server");
+
 });

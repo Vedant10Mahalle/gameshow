@@ -1,36 +1,44 @@
 const socket = io();
 
 let audioContext = null;
+let currentQuestionData = null;
 
 /* -----------------------------
-   TEAM NAME UPDATE
+TEAM NAME UPDATE
 ------------------------------*/
 socket.on("teamUpdate", (teams) => {
+
     const teamA = document.getElementById("teamAName");
     const teamB = document.getElementById("teamBName");
 
     if (teamA) teamA.textContent = teams.teamA.name;
     if (teamB) teamB.textContent = teams.teamB.name;
+
 });
 
 /* -----------------------------
-   SCORE UPDATE
+SCORE UPDATE
 ------------------------------*/
 socket.on("scoreUpdate", (scores) => {
+
     const scoreA = document.getElementById("teamAScore");
     const scoreB = document.getElementById("teamBScore");
 
     if (scoreA) scoreA.textContent = scores.teamA;
     if (scoreB) scoreB.textContent = scores.teamB;
+
 });
 
+
 /* -----------------------------
-   STRIKE UPDATE
+STRIKE UPDATE
 ------------------------------*/
+
 let prevStrikesA = -1;
 let prevStrikesB = -1;
 
 function handleStrikesChanged(strikesA, strikesB) {
+
     if (prevStrikesA === -1 || prevStrikesB === -1) {
         prevStrikesA = strikesA;
         prevStrikesB = strikesB;
@@ -38,82 +46,105 @@ function handleStrikesChanged(strikesA, strikesB) {
     }
 
     if (strikesA === 3 && prevStrikesA < 3) {
-        // Team A got 3 strikes, chance goes to Team B
+
         showChanceMessage("B");
+
     } else if (strikesB === 3 && prevStrikesB < 3) {
-        // Team B got 3 strikes, chance goes to Team A
+
         showChanceMessage("A");
+
     }
+
     prevStrikesA = strikesA;
     prevStrikesB = strikesB;
 }
 
 function showChanceMessage(chanceTeam) {
+
     const oppName = chanceTeam === "A"
-        ? (document.getElementById("teamAName") ? document.getElementById("teamAName").textContent : "TEAM A")
-        : (document.getElementById("teamBName") ? document.getElementById("teamBName").textContent : "TEAM B");
+        ? (document.getElementById("teamAName")?.textContent || "TEAM A")
+        : (document.getElementById("teamBName")?.textContent || "TEAM B");
 
     const overlay = document.getElementById("chanceOverlay");
     const text = document.getElementById("chanceMessageText");
     const buzzer = document.getElementById("buzzerSound");
 
-    if (overlay && text) {
-        text.textContent = `CHANCE TO ${oppName}!`;
-        overlay.style.display = "flex";
+    if (!overlay || !text) return;
 
-        if (buzzer) {
-            buzzer.currentTime = 0;
-            buzzer.play().catch(e => console.log("Audio play failed:", e));
-        }
+    text.textContent = `CHANCE TO ${oppName}!`;
 
-        setTimeout(() => {
-            overlay.style.display = "none";
-        }, 4000);
+    overlay.style.display = "flex";
+
+    if (buzzer) {
+        buzzer.currentTime = 0;
+        buzzer.play().catch(() => { });
     }
+
+    setTimeout(() => {
+
+        overlay.style.display = "none";
+
+    }, 4000);
 }
 
+
 socket.on("strikeUpdate", (strikes) => {
+
     updateStrikesDisplay("A", strikes.teamA);
     updateStrikesDisplay("B", strikes.teamB);
+
     handleStrikesChanged(strikes.teamA, strikes.teamB);
+
 });
 
 function updateStrikesDisplay(team, count) {
+
     const element = document.getElementById(`strikes${team}`);
     if (!element) return;
 
     let strikeHTML = "";
 
     for (let i = 0; i < 3; i++) {
+
         if (i < count) {
             strikeHTML += '<span class="strike filled">✕</span>';
         } else {
             strikeHTML += '<span class="strike empty">○</span>';
         }
+
     }
 
     element.innerHTML = strikeHTML;
+
 }
 
+
 /* -----------------------------
-   ANSWER REVEAL
+ANSWER REVEAL
 ------------------------------*/
+
 socket.on("answerRevealed", (data) => {
+
     const board = document.getElementById("answerBoard");
     if (!board) return;
 
-    const boxes = board.querySelectorAll(".answer-box");
+    let boxes = board.querySelectorAll(".answer-box");
+
+    if (!boxes.length) return;
 
     for (let i = 0; i < boxes.length; i++) {
+
         if (boxes[i].classList.contains("placeholder")) {
+
             boxes[i].classList.remove("placeholder");
 
             boxes[i].innerHTML = `
                 <div class="answer-text">${data.answer.answer}</div>
-                <div class="answer-points">${data.answer.weight} pts</div>
+                <div class="answer-points">${data.answer.weight}</div>
             `;
 
             boxes[i].style.animation = "slideIn 0.5s ease-out";
+
             break;
         }
     }
@@ -121,17 +152,25 @@ socket.on("answerRevealed", (data) => {
     playBuzzer();
 });
 
+
 /* -----------------------------
-   BUZZER SOUND
+BUZZER SOUND
 ------------------------------*/
+
 socket.on("playBuzzer", () => {
+
     playBuzzer();
+
 });
 
 function playBuzzer() {
+
     try {
+
         if (!audioContext) {
+
             audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
         }
 
         const oscillator = audioContext.createOscillator();
@@ -150,13 +189,18 @@ function playBuzzer() {
         oscillator.stop(audioContext.currentTime + 0.15);
 
     } catch (error) {
+
         console.error("Error playing buzzer:", error);
+
     }
+
 }
 
+
 /* -----------------------------
-   TIMER UPDATE
+TIMER UPDATE
 ------------------------------*/
+
 socket.on("timerUpdate", (seconds) => {
 
     const timerDisplay = document.getElementById("timerDisplay");
@@ -171,23 +215,33 @@ socket.on("timerUpdate", (seconds) => {
         `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
 
     if (seconds <= 10 && seconds > 0) {
+
         timerDisplay.style.color = "#ff1744";
+
     } else {
+
         timerDisplay.style.color = "#ffd700";
+
     }
+
 });
 
+
 socket.on("timerFinished", () => {
+
     const timerDisplay = document.getElementById("timerDisplay");
     if (!timerDisplay) return;
 
     timerDisplay.textContent = "00:00";
     timerDisplay.style.color = "#ff1744";
+
 });
 
+
 /* -----------------------------
-   THANK YOU SCREEN
+THANK YOU SCREEN
 ------------------------------*/
+
 socket.on("showThankYouScreen", (show) => {
 
     const gameScreen = document.getElementById("gameScreen");
@@ -196,18 +250,48 @@ socket.on("showThankYouScreen", (show) => {
     if (!gameScreen || !thankYouScreen) return;
 
     if (show) {
+
         gameScreen.style.display = "none";
         thankYouScreen.style.display = "flex";
+
     } else {
+
         gameScreen.style.display = "block";
         thankYouScreen.style.display = "none";
+
     }
+
 });
 
+
 /* -----------------------------
-   STATE SYNC
+STATE SYNC
 ------------------------------*/
+
 socket.on("stateUpdate", (state) => {
+
+    currentQuestionData = state.currentQuestion || null;
+
+    const qBox = document.getElementById("audienceQuestionDisplay");
+
+    if (qBox) {
+
+        const qHeader = qBox.querySelector("h3");
+
+        if (state.currentQuestion?.question &&
+            state.currentQuestion.question !== "Load a question to start...") {
+
+            if (qHeader) qHeader.textContent = state.currentQuestion.question;
+
+            qBox.style.display = "block";
+
+        } else {
+
+            qBox.style.display = "none";
+
+        }
+
+    }
 
     const teamA = document.getElementById("teamAName");
     const teamB = document.getElementById("teamBName");
@@ -227,13 +311,18 @@ socket.on("stateUpdate", (state) => {
     handleStrikesChanged(state.teamA.strikes, state.teamB.strikes);
 
     if (state.revealedAnswers.length === 0) {
+
         resetAnswerBoard();
+
     }
+
 });
 
+
 /* -----------------------------
-   RESET ANSWER BOARD
+RESET ANSWER BOARD
 ------------------------------*/
+
 function resetAnswerBoard() {
 
     const board = document.getElementById("answerBoard");
@@ -241,17 +330,61 @@ function resetAnswerBoard() {
 
     board.innerHTML = "";
 
-    for (let i = 0; i < 8; i++) {
+    const numBoxes = (currentQuestionData && currentQuestionData.answers)
+        ? currentQuestionData.answers.length
+        : 8;
+
+    for (let i = 0; i < numBoxes; i++) {
+
         const box = document.createElement("div");
+
         box.className = "answer-box placeholder";
         box.textContent = "?";
+
         board.appendChild(box);
     }
+
 }
 
+
 /* -----------------------------
-   SOCKET CONNECT
+QUESTION BROADCAST
 ------------------------------*/
+
+socket.on("broadcastCurrentQuestion", (questionData) => {
+
+    currentQuestionData = questionData;
+
+    const qBox = document.getElementById("audienceQuestionDisplay");
+
+    if (!qBox) return;
+
+    const qHeader = qBox.querySelector("h3");
+
+    if (questionData?.question &&
+        questionData.question !== "Load a question to start...") {
+
+        if (qHeader) qHeader.textContent = questionData.question;
+
+        qBox.style.display = "block";
+
+    } else {
+
+        qBox.style.display = "none";
+
+    }
+
+    resetAnswerBoard();
+
+});
+
+
+/* -----------------------------
+SOCKET CONNECT
+------------------------------*/
+
 socket.on("connect", () => {
+
     console.log("Display connected to server");
+
 });
