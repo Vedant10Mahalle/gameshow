@@ -13,434 +13,658 @@
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
 
     <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-body{
-font-family:'Outfit',sans-serif;
-display:flex;
-flex-direction:column;
-align-items:center;
-}
-
-/* =============================
+        /* =============================
 MAIN CONTAINER
 ============================= */
 
-.fm-container{
-width:100%;
-max-width:1700px;
-margin:auto;
+        .fm-container {
+            width: 100%;
+            max-width: 1700px;
+            margin: auto;
+            padding: 40px 80px;
+        }
 
-/* pushes content below header */
-padding-top:260px;
-
-/* prevents footer overlap */
-padding-bottom:240px;
-
-padding-left:80px;
-padding-right:80px;
-}
-
-/* =============================
+        /* =============================
 HEADER
 ============================= */
 
-.global-header{
+        .global-header {
+            position: sticky;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 80px;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.3), transparent);
+            z-index: 1000;
+        }
 
-position:fixed;
+        .brand-logo {
+            width: 200px;
+            height: 200px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 35px rgba(255, 215, 0, 0.7));
+        }
 
-top:30px;
-left:0;
-width:100%;
-
-display:flex;
-justify-content:space-between;
-align-items:center;
-
-padding:0 120px;
-
-z-index:1000;
-
-}
-
-/* LOGOS */
-
-.brand-logo{
-
-width:220px;
-height:220px;
-
-object-fit:contain;
-
-filter:drop-shadow(0 0 35px rgba(255,215,0,0.7));
-
-}
-
-/* =============================
+        /* =============================
 TITLE
 ============================= */
 
-.gala-title-container{
-text-align:center;
-margin-top:30px;
-}
+        .gala-title-container {
+            text-align: center;
+            margin-top: 30px;
+        }
 
-.gala-title{
+        .gala-title {
 
-font-size:4rem;
+            font-size: 4rem;
 
-letter-spacing:14px;
+            letter-spacing: 14px;
 
-font-weight:900;
+            font-weight: 900;
 
-color:#ffd700;
+            color: #ffd700;
 
-text-shadow:0 0 35px rgba(255,215,0,0.8);
+            text-shadow: 0 0 35px rgba(255, 215, 0, 0.8);
 
-}
+        }
 
-/* =============================
+        /* =============================
 ROUND TITLE
 ============================= */
 
-.round-title{
+        .round-title {
 
-font-size:6rem;
+            font-size: 6rem;
 
-font-weight:900;
+            font-weight: 900;
 
-letter-spacing:6px;
+            letter-spacing: 6px;
 
-text-align:center;
+            text-align: center;
 
-color:#ffd700;
+            color: #ffd700;
 
-margin-bottom:50px;
+            margin-bottom: 50px;
 
-text-shadow:0 0 40px rgba(255,215,0,0.8);
+            text-shadow: 0 0 40px rgba(255, 215, 0, 0.8);
 
-}
+        }
 
-/* =============================
+        /* =============================
 QUESTION DISPLAY
 ============================= */
 
-.fm-question-display{
+        .fm-question-display {
 
-width:100%;
-max-width:1300px;
+            width: 100%;
+            max-width: 1300px;
 
-margin:40px auto;
+            margin: 40px auto;
 
-padding:60px;
+            padding: 60px;
 
-border-radius:22px;
+            border-radius: 22px;
 
-background:linear-gradient(
-135deg,
-rgba(255,215,0,0.25),
-rgba(255,215,0,0.05)
-);
+            background: linear-gradient(135deg,
+                    rgba(255, 215, 0, 0.25),
+                    rgba(255, 215, 0, 0.05));
 
-border:4px solid #ffd700;
+            border: 4px solid #ffd700;
 
-text-align:center;
+            text-align: center;
 
-box-shadow:0 0 50px rgba(255,215,0,0.5);
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.5);
 
-}
+        }
 
-.fm-question-label{
+        .fm-question-label {
 
-font-size:2.4rem;
+            font-size: 2.4rem;
 
-font-weight:800;
+            font-weight: 800;
 
-color:#ffd700;
+            color: #ffd700;
 
-letter-spacing:4px;
+            letter-spacing: 4px;
 
-margin-bottom:15px;
+            margin-bottom: 15px;
 
-}
+        }
 
-.fm-question-text{
+        .fm-question-text {
 
-font-size:5rem;
+            font-size: 5rem;
 
-font-weight:900;
+            font-weight: 900;
 
-line-height:1.25;
+            line-height: 1.25;
 
-text-shadow:0 0 20px rgba(255,255,255,0.6);
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
 
-}
+        }
 
-/* =============================
+        /* =============================
 TIMER
 ============================= */
 
-.timer-section{
+        .timer-section {
 
-border:4px solid #ffd700;
+            border: 4px solid #ffd700;
 
-border-radius:30px;
+            border-radius: 30px;
 
-padding:70px 140px;
+            padding: 70px 140px;
 
-text-align:center;
+            text-align: center;
 
-margin-bottom:50px;
+            margin-bottom: 50px;
 
-background:rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.5);
 
-}
+        }
 
-.timer-label{
+        .timer-label {
 
-font-size:2.6rem;
+            font-size: 2.6rem;
 
-color:#ffd700;
+            color: #ffd700;
 
-margin-bottom:20px;
+            margin-bottom: 20px;
 
-font-weight:800;
+            font-weight: 800;
 
-}
+        }
 
-.timer-display{
+        .timer-display {
 
-font-size:12rem;
+            font-size: 12rem;
 
-font-weight:900;
+            font-weight: 900;
 
-color:#ffd700;
+            color: #ffd700;
 
-font-family:'Courier New',monospace;
+            font-family: 'Courier New', monospace;
 
-text-shadow:0 0 40px rgba(255,215,0,0.9);
+            text-shadow: 0 0 40px rgba(255, 215, 0, 0.9);
 
-}
+        }
 
-/* =============================
+        /* =============================
 SCOREBOARD
 ============================= */
 
-.scoreboard{
+        .scoreboard {
 
-display:grid;
+            display: grid;
 
-grid-template-columns:1fr 1fr;
+            grid-template-columns: 1fr 1fr;
 
-gap:60px;
+            gap: 60px;
 
-width:100%;
+            width: 100%;
 
-margin-top:40px;
+            margin-top: 40px;
 
-}
+        }
 
-.team-box{
+        .team-box {
 
-border:3px solid;
+            border: 3px solid;
 
-border-radius:22px;
+            border-radius: 22px;
 
-padding:45px 35px;
+            padding: 45px 35px;
 
-text-align:center;
+            text-align: center;
 
-background:rgba(0,0,0,0.45);
+            background: rgba(0, 0, 0, 0.45);
 
-}
+        }
 
-.team-a{
-border-color:#ff6b6b;
-}
+        .team-a {
+            border-color: #ff6b6b;
+        }
 
-.team-b{
-border-color:#4ecdc4;
-}
+        .team-b {
+            border-color: #4ecdc4;
+        }
 
-.team-name{
+        .team-name {
 
-font-size:3.2rem;
+            font-size: 3.2rem;
 
-font-weight:900;
+            font-weight: 900;
 
-margin-bottom:20px;
+            margin-bottom: 20px;
 
-letter-spacing:4px;
+            letter-spacing: 4px;
 
-}
+        }
 
-.team-a .team-name{
-color:#ff6b6b;
-}
+        .team-a .team-name {
+            color: #ff6b6b;
+        }
 
-.team-b .team-name{
-color:#4ecdc4;
-}
+        .team-b .team-name {
+            color: #4ecdc4;
+        }
 
-.score{
+        .score {
 
-font-size:3.8rem;
+            font-size: 3.8rem;
 
-font-weight:900;
+            font-weight: 900;
 
-color:white;
+            color: white;
 
-margin-bottom:20px;
+            margin-bottom: 20px;
 
-}
+        }
 
-/* PLAYER SCORES */
+        /* PLAYER SCORES */
 
-.player-scores{
+        .player-scores {
 
-font-size:2rem;
+            font-size: 2rem;
 
-font-weight:700;
+            font-weight: 700;
 
-display:flex;
-flex-direction:column;
-gap:10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
 
-}
+        }
 
-/* =============================
+        /* =============================
 ANSWER BOARD
 ============================= */
 
-.answer-board{
+        .answer-board {
 
-display:flex;
-justify-content:center;
+            display: flex;
+            justify-content: center;
 
-width:100%;
+            width: 100%;
 
-margin-top:50px;
+            margin-top: 50px;
 
-}
+        }
 
-.board-grid{
+        .board-grid {
 
-display:grid;
+            display: grid;
 
-grid-template-columns:repeat(2,minmax(420px,1fr));
+            grid-template-columns: repeat(2, minmax(420px, 1fr));
 
-gap:35px;
+            gap: 35px;
 
-width:100%;
-max-width:1200px;
+            width: 100%;
+            max-width: 1200px;
 
-}
+        }
 
-.answer-box{
+        .answer-box {
 
-min-height:130px;
+            min-height: 130px;
 
-display:flex;
-align-items:center;
-justify-content:space-between;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
 
-padding:25px 40px;
+            padding: 25px 40px;
 
-font-size:2.4rem;
+            font-size: 2.4rem;
 
-font-weight:800;
+            font-weight: 800;
 
-border-radius:14px;
+            border-radius: 14px;
 
-border:2px solid rgba(255,255,255,0.25);
+            border: 2px solid rgba(255, 255, 255, 0.25);
 
-color:white;
+            color: white;
 
-background:rgba(255,255,255,0.08);
+            background: rgba(255, 255, 255, 0.08);
 
-}
+        }
 
-.answer-box.placeholder{
+        .answer-box.placeholder {
 
-justify-content:center;
+            justify-content: center;
 
-font-size:4rem;
+            font-size: 4rem;
 
-border-style:dashed;
+            border-style: dashed;
 
-}
+        }
 
-/* =============================
+        /* =============================
 STRIKE OVERLAY
 ============================= */
 
-.massive-strike{
+        .massive-strike {
 
-position:fixed;
+            position: fixed;
 
-top:0;
-left:0;
+            top: 0;
+            left: 0;
 
-width:100vw;
-height:100vh;
+            width: 100vw;
+            height: 100vh;
 
-background:rgba(255,0,0,0.25);
+            background: rgba(255, 0, 0, 0.25);
 
-display:flex;
-align-items:center;
-justify-content:center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
-font-size:35rem;
+            font-size: 35rem;
 
-color:#ff1744;
+            color: #ff1744;
 
-text-shadow:0 0 100px #ff1744;
+            text-shadow: 0 0 100px #ff1744;
 
-z-index:9999;
+            z-index: 9999;
 
-}
+        }
 
-/* =============================
+        /* =============================
 FOOTER
 ============================= */
 
-.global-footer{
+        .global-footer {
+            position: relative;
+            width: 100%;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+            margin-top: 60px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.4), transparent);
+        }
 
-position:fixed;
+        .vsm-branding {
+            font-size: 1.6rem;
+            letter-spacing: 4px;
+            font-weight: 800;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.7), 0 0 40px rgba(255, 215, 0, 0.6);
+        }
 
-bottom:0;
-left:0;
+        /* =====================================
+   DISPLAY-FM — RESPONSIVE
+===================================== */
 
-width:100%;
+        @media(max-width:1024px) {
+            .global-header {
+                position: relative;
+                padding: 20px 30px;
+            }
 
-padding:40px;
+            .brand-logo {
+                width: 90px;
+                height: 90px;
+            }
 
-display:flex;
-justify-content:center;
+            .gala-title {
+                font-size: 2.4rem;
+                letter-spacing: 6px;
+            }
 
-background:linear-gradient(
-to top,
-rgba(0,0,0,0.9),
-rgba(0,0,0,0.4),
-transparent
-);
+            .fm-container {
+                padding: 30px;
+            }
 
-}
+            .round-title {
+                font-size: 3.5rem;
+            }
 
-.vsm-branding{
+            .fm-question-display {
+                padding: 35px;
+            }
 
-font-size:2.6rem;
+            .fm-question-text {
+                font-size: 3rem;
+            }
 
-letter-spacing:6px;
+            .timer-section {
+                padding: 40px 60px;
+            }
 
-font-weight:800;
+            .timer-display {
+                font-size: 7rem;
+            }
 
-text-shadow:
-0 0 20px rgba(255,255,255,0.7),
-0 0 40px rgba(255,215,0,0.6);
+            .scoreboard {
+                gap: 30px;
+            }
 
-}
+            .board-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
 
-</style>
+            .vsm-branding {
+                font-size: 1.2rem;
+                letter-spacing: 2px;
+            }
+
+            .global-footer {
+                padding: 25px;
+                margin-top: 30px;
+            }
+        }
+
+        @media(max-width:768px) {
+            .global-header {
+                position: relative;
+                padding: 15px 15px;
+            }
+
+            .brand-logo {
+                width: 60px;
+                height: 60px;
+            }
+
+            .gala-title {
+                font-size: 1.8rem;
+                letter-spacing: 4px;
+            }
+
+            .fm-container {
+                padding: 20px 15px;
+            }
+
+            .round-title {
+                font-size: 2.4rem;
+                margin-bottom: 15px;
+            }
+
+            .fm-question-display {
+                padding: 20px;
+                border-radius: 16px;
+                border-width: 3px;
+            }
+
+            .fm-question-label {
+                font-size: 1.4rem;
+            }
+
+            .fm-question-text {
+                font-size: 2rem;
+            }
+
+            .timer-section {
+                padding: 25px 30px;
+                border-radius: 18px;
+            }
+
+            .timer-label {
+                font-size: 1.6rem;
+            }
+
+            .timer-display {
+                font-size: 4.5rem;
+            }
+
+            .scoreboard {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .team-box {
+                padding: 22px;
+                border-radius: 16px;
+            }
+
+            .team-name {
+                font-size: 2rem;
+            }
+
+            .score {
+                font-size: 3rem;
+            }
+
+            .player-scores {
+                font-size: 1.5rem;
+            }
+
+            .board-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .answer-box {
+                min-height: 65px;
+                padding: 16px 18px;
+                font-size: 1.5rem;
+            }
+
+            .answer-box.placeholder {
+                font-size: 2rem;
+            }
+
+            .vsm-branding {
+                font-size: 0.9rem;
+                letter-spacing: 1px;
+            }
+
+            .global-footer {
+                padding: 15px;
+                margin-top: 20px;
+            }
+
+            .massive-strike {
+                font-size: 12rem;
+            }
+        }
+
+        @media(max-width:480px) {
+            .global-header {
+                padding: 10px 10px;
+            }
+
+            .brand-logo {
+                width: 45px;
+                height: 45px;
+            }
+
+            .gala-title {
+                font-size: 1.35rem;
+                letter-spacing: 3px;
+            }
+
+            .fm-container {
+                padding: 15px 10px;
+            }
+
+            .round-title {
+                font-size: 1.8rem;
+                margin-bottom: 12px;
+            }
+
+            .fm-question-display {
+                padding: 15px;
+                border-radius: 12px;
+            }
+
+            .fm-question-label {
+                font-size: 1.1rem;
+            }
+
+            .fm-question-text {
+                font-size: 1.6rem;
+            }
+
+            .timer-section {
+                padding: 18px 20px;
+                border-radius: 14px;
+            }
+
+            .timer-label {
+                font-size: 1.2rem;
+            }
+
+            .timer-display {
+                font-size: 3.5rem;
+            }
+
+            .scoreboard {
+                gap: 10px;
+            }
+
+            .team-box {
+                padding: 16px;
+                border-radius: 12px;
+            }
+
+            .team-name {
+                font-size: 1.6rem;
+            }
+
+            .score {
+                font-size: 2.4rem;
+            }
+
+            .player-scores {
+                font-size: 1.25rem;
+            }
+
+            .board-grid {
+                gap: 8px;
+            }
+
+            .answer-box {
+                min-height: 50px;
+                padding: 12px 14px;
+                font-size: 1.3rem;
+            }
+
+            .answer-box.placeholder {
+                font-size: 1.6rem;
+            }
+
+            .vsm-branding {
+                font-size: 0.8rem;
+                letter-spacing: 1px;
+            }
+
+            .global-footer {
+                padding: 12px;
+                margin-top: 15px;
+            }
+
+            .massive-strike {
+                font-size: 8rem;
+            }
+        }
+    </style>
 
 </head>
 
@@ -531,11 +755,13 @@ text-shadow:
 
     </div>
 
+    <!-- FOOTER HIDDEN
     <footer class="global-footer">
         <div class="vsm-branding">
             Made with ❤️ by VSM Generation Gala ● All Rights Reserved
         </div>
     </footer>
+    -->
 
     <script>
 

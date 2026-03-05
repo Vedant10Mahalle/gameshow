@@ -4,113 +4,130 @@
 GLOBAL RESET
 ===================================== */
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Outfit',sans-serif;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Outfit', sans-serif;
 }
 
-html,body{
-width:100%;
-height:100%;
-overflow-x:hidden;
-color:white;
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+    overflow-x: hidden;
+    color: white;
 }
 
 /* =====================================
 BACKGROUND
 ===================================== */
 
-body{
-background:url('/user_bg.jpg') center/cover fixed no-repeat;
+body {
+    background: url('/user_bg.jpg') center/cover fixed no-repeat;
 }
 
-body::before{
-content:"";
-position:fixed;
-inset:0;
-background:rgba(0,0,0,0.55);
-z-index:-1;
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: -1;
 }
 
 /* =====================================
 HEADER
 ===================================== */
 
-.global-header{
+.global-header {
 
-position:fixed;
+    position: sticky;
+    /* changed from fixed */
 
-top:30px;
-left:0;
-width:100%;
+    top: 0;
 
-display:flex;
-justify-content:space-between;
-align-items:center;
+    width: 100%;
 
-padding:0 140px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
-z-index:1000;
+    padding: 40px 120px;
+
+    background: linear-gradient(to bottom,
+            rgba(0, 0, 0, 0.85),
+            rgba(0, 0, 0, 0.3),
+            transparent);
+
+    z-index: 1000;
 
 }
 
 /* LOGOS */
 
-.brand-logo{
+.brand-logo {
 
-width:220px;
-height:220px;
+    width: 200px;
+    height: 200px;
 
-object-fit:contain;
+    object-fit: contain;
 
-filter:drop-shadow(0 0 40px rgba(255,215,0,0.7));
+    filter: drop-shadow(0 0 40px rgba(255, 215, 0, 0.7));
 
-animation:logoFloat 5s ease-in-out infinite;
+    animation: logoFloat 5s ease-in-out infinite;
 
 }
 
-@keyframes logoFloat{
+@keyframes logoFloat {
 
-0%,100%{transform:translateY(0);}
-50%{transform:translateY(-10px);}
+    0%,
+    100% {
+        transform: translateY(0);
+    }
 
+    50% {
+        transform: translateY(-10px);
+    }
 }
 
 /* =====================================
 TITLE
 ===================================== */
 
-.gala-title-container{
+.gala-title-container {
 
-margin-top:40px;
-text-align:center;
-
-}
-
-.gala-title{
-
-font-size:4rem;
-font-weight:900;
-
-letter-spacing:14px;
-
-color:#FFD700;
-
-text-shadow:
-0 0 30px rgba(255,215,0,0.9),
-0 0 60px rgba(255,215,0,0.5);
-
-animation:titleGlow 3s infinite;
+    margin: 40px 0;
+    text-align: center;
 
 }
 
-@keyframes titleGlow{
+.gala-title {
 
-0%,100%{transform:scale(1);}
-50%{transform:scale(1.05);}
+    font-size: 4rem;
+    font-weight: 900;
 
+    letter-spacing: 14px;
+
+    color: #FFD700;
+
+    text-shadow:
+        0 0 30px rgba(255, 215, 0, 0.9),
+        0 0 60px rgba(255, 215, 0, 0.5);
+
+    animation: titleGlow 3s infinite;
+
+}
+
+@keyframes titleGlow {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
 }
 
 /* =====================================
@@ -119,22 +136,18 @@ MAIN CONTAINERS
 
 .display-container,
 .fm-container,
-.index-container{
+.index-container {
 
-width:100%;
-max-width:1700px;
+    width: 100%;
+    max-width: 1700px;
 
-margin:auto;
+    margin: auto;
 
-padding-top:260px;
-padding-bottom:220px;
+    padding: 80px;
 
-padding-left:80px;
-padding-right:80px;
-
-display:flex;
-flex-direction:column;
-align-items:center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
 }
 
@@ -143,21 +156,21 @@ ROUND TITLES
 ===================================== */
 
 .round-title,
-.fm-title{
+.fm-title {
 
-font-size:6rem;
+    font-size: 6rem;
 
-font-weight:900;
+    font-weight: 900;
 
-letter-spacing:6px;
+    letter-spacing: 6px;
 
-color:#FFD700;
+    color: #FFD700;
 
-text-align:center;
+    text-align: center;
 
-margin-bottom:40px;
+    margin-bottom: 40px;
 
-text-shadow:0 0 50px rgba(255,215,0,0.9);
+    text-shadow: 0 0 50px rgba(255, 215, 0, 0.9);
 
 }
 
@@ -165,52 +178,48 @@ text-shadow:0 0 50px rgba(255,215,0,0.9);
 QUESTION DISPLAY
 ===================================== */
 
-.fm-question-display{
+.fm-question-display {
 
-width:100%;
-max-width:1300px;
+    width: 100%;
+    max-width: 1300px;
 
-padding:60px;
+    padding: 60px;
 
-border-radius:25px;
+    border-radius: 25px;
 
-border:5px solid #FFD700;
+    border: 5px solid #FFD700;
 
-background:linear-gradient(
-135deg,
-rgba(255,215,0,0.25),
-rgba(255,215,0,0.05)
-);
+    background: linear-gradient(135deg,
+            rgba(255, 215, 0, 0.25),
+            rgba(255, 215, 0, 0.05));
 
-text-align:center;
+    text-align: center;
 
-box-shadow:0 0 50px rgba(255,215,0,0.5);
+    box-shadow: 0 0 50px rgba(255, 215, 0, 0.5);
 
-margin-bottom:50px;
+    margin-bottom: 50px;
 
 }
 
-.fm-question-label{
+.fm-question-label {
 
-font-size:2.5rem;
+    font-size: 2.5rem;
+    font-weight: 800;
 
-font-weight:800;
+    letter-spacing: 4px;
 
-letter-spacing:4px;
+    margin-bottom: 20px;
 
-margin-bottom:20px;
-
-color:#FFD700;
+    color: #FFD700;
 
 }
 
-.fm-question-text{
+.fm-question-text {
 
-font-size:5rem;
+    font-size: 5rem;
+    font-weight: 900;
 
-font-weight:900;
-
-line-height:1.25;
+    line-height: 1.25;
 
 }
 
@@ -218,135 +227,129 @@ line-height:1.25;
 TIMER
 ===================================== */
 
-.timer-section{
+.timer-section {
 
-padding:70px 120px;
+    padding: 70px 120px;
 
-border-radius:30px;
+    border-radius: 30px;
 
-border:5px solid #FFD700;
+    border: 5px solid #FFD700;
 
-background:rgba(0,0,0,0.65);
+    background: rgba(0, 0, 0, 0.65);
 
-text-align:center;
+    text-align: center;
 
-margin-bottom:60px;
-
-}
-
-.timer-label{
-
-font-size:2.6rem;
-
-font-weight:800;
-
-margin-bottom:20px;
-
-color:#FFD700;
+    margin-bottom: 60px;
 
 }
 
-.timer-display{
+.timer-label {
 
-font-size:12rem;
+    font-size: 2.6rem;
+    font-weight: 800;
 
-font-weight:900;
+    margin-bottom: 20px;
 
-font-family:'Courier New',monospace;
-
-color:#FFD700;
-
-text-shadow:0 0 60px rgba(255,215,0,0.9);
-
-animation:timerPulse 1.2s infinite;
+    color: #FFD700;
 
 }
 
-@keyframes timerPulse{
+.timer-display {
 
-0%,100%{transform:scale(1);}
-50%{transform:scale(1.05);}
+    font-size: 12rem;
+ 
+    font-weight: 900;
 
+    font-family: 'Courier New', monospace;
+
+    color: #FFD700;
+
+    text-shadow: 0 0 60px rgba(255, 215, 0, 0.9);
+
+    animation: timerPulse 1.2s infinite;
+
+}
+
+@keyframes timerPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
 }
 
 /* =====================================
 SCOREBOARD
 ===================================== */
 
-.scoreboard{
+.scoreboard {
 
-width:100%;
+    width: 100%;
 
-display:grid;
+    display: grid;
 
-grid-template-columns:1fr 1fr;
+    grid-template-columns: 1fr 1fr;
 
-gap:80px;
+    gap: 80px;
 
-margin-bottom:50px;
-
-}
-
-/* TEAM BOX */
-
-.team-box{
-
-padding:50px;
-
-border-radius:25px;
-
-border:4px solid;
-
-background:rgba(0,0,0,0.55);
-
-text-align:center;
+    margin-bottom: 50px;
 
 }
 
-.team-a{
-border-color:#ff6b6b;
-}
+.team-box {
 
-.team-b{
-border-color:#4ecdc4;
-}
+    padding: 50px;
 
-/* TEAM NAME */
+    border-radius: 25px;
 
-.team-name{
+    border: 4px solid;
 
-font-size:3.5rem;
+    background: rgba(0, 0, 0, 0.55);
 
-font-weight:900;
-
-letter-spacing:4px;
-
-margin-bottom:20px;
+    text-align: center;
 
 }
 
-/* SCORE */
+.team-a {
+    border-color: #ff6b6b;
+}
 
-.score{
+.team-b {
+    border-color: #4ecdc4;
+}
 
-font-size:4.5rem;
+.team-name {
 
-font-weight:900;
+    font-size: 3.5rem;
+    font-weight: 900;
 
-margin-bottom:20px;
+    letter-spacing: 4px;
+
+    margin-bottom: 20px;
 
 }
 
-/* PLAYER SCORES */
+.score {
 
-.player-scores{
+    font-size: 4.5rem;
+    font-weight: 900;
 
-font-size:2.2rem;
+    margin-bottom: 20px;
 
-display:flex;
-flex-direction:column;
+}
 
-gap:10px;
+.player-scores {
+
+    font-size: 2.2rem;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 10px;
 
 }
 
@@ -354,76 +357,70 @@ gap:10px;
 ANSWER BOARD
 ===================================== */
 
-.answer-board{
+.answer-board {
 
-display:flex;
-justify-content:center;
+    display: flex;
+    justify-content: center;
 
-width:100%;
+    width: 100%;
 
-margin-top:40px;
-
-}
-
-.board-grid{
-
-display:grid;
-
-grid-template-columns:repeat(2,1fr);
-
-gap:35px;
-
-width:100%;
-max-width:1200px;
+    margin-top: 40px;
 
 }
 
-/* ANSWER BOX */
+.board-grid {
 
-.answer-box{
+    display: grid;
 
-min-height:130px;
+    grid-template-columns: repeat(2, 1fr);
 
-display:flex;
-align-items:center;
-justify-content:space-between;
+    gap: 35px;
 
-padding:30px 40px;
-
-border-radius:15px;
-
-font-size:2.5rem;
-font-weight:800;
-
-border:3px solid rgba(255,255,255,0.2);
-
-background:rgba(255,255,255,0.1);
-
-transition:0.3s;
+    width: 100%;
+    max-width: 1200px;
 
 }
 
-.answer-box.revealed{
+.answer-box {
 
-background:linear-gradient(
-180deg,
-#1565C0,
-#2979F0
-);
+    min-height: 130px;
 
-box-shadow:0 0 40px rgba(41,121,240,0.8);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 30px 40px;
+
+    border-radius: 15px;
+
+    font-size: 2.5rem;
+    font-weight: 800;
+
+    border: 3px solid rgba(255, 255, 255, 0.2);
+
+    background: rgba(255, 255, 255, 0.1);
+
+    transition: 0.3s;
 
 }
 
-.answer-box.placeholder{
+.answer-box.revealed {
 
-justify-content:center;
+    background: linear-gradient(180deg, #1565C0, #2979F0);
 
-font-size:4rem;
+    box-shadow: 0 0 40px rgba(41, 121, 240, 0.8);
 
-border-style:dashed;
+}
 
-color:rgba(255,255,255,0.4);
+.answer-box.placeholder {
+
+    justify-content: center;
+
+    font-size: 4rem;
+
+    border-style: dashed;
+
+    color: rgba(255, 255, 255, 0.4);
 
 }
 
@@ -431,155 +428,117 @@ color:rgba(255,255,255,0.4);
 BUTTONS
 ===================================== */
 
-.btn{
+.btn {
 
-padding:18px;
+    padding: 18px;
 
-border-radius:12px;
+    border-radius: 12px;
 
-font-size:1.5rem;
-font-weight:800;
+    font-size: 1.5rem;
+    font-weight: 800;
 
-border:none;
+    border: none;
 
-cursor:pointer;
+    cursor: pointer;
 
-transition:0.25s;
-
-}
-
-.btn:hover{
-transform:scale(1.1);
-}
-
-/* COLORS */
-
-.btn-primary{
-background:#2979F0;
-color:white;
-}
-
-.btn-success{
-background:#00E676;
-color:black;
-}
-
-.btn-danger{
-background:#FF1744;
-color:white;
-}
-
-.btn-secondary{
-background:#555;
-color:white;
-}
-
-/* BACK BUTTON */
-
-.header-buttons a{
-
-padding:16px 32px;
-
-font-size:1.6rem;
-
-border-radius:12px;
-
-background:#2979F0;
-
-color:white;
-
-font-weight:900;
-
-text-decoration:none;
-
-transition:0.3s;
+    transition: 0.25s;
 
 }
 
-.header-buttons a:hover{
+.btn:hover {
+    transform: scale(1.1);
+}
 
-transform:scale(1.15);
+.btn-primary {
+    background: #2979F0;
+    color: white;
+}
 
-background:#1565C0;
+.btn-success {
+    background: #00E676;
+    color: black;
+}
 
+.btn-danger {
+    background: #FF1744;
+    color: white;
+}
+
+.btn-secondary {
+    background: #555;
+    color: white;
 }
 
 /* =====================================
 HOST PANELS
 ===================================== */
 
-.host-container{
+.host-container {
 
-height:100vh;
+    min-height: 100vh;
 
-display:flex;
-flex-direction:column;
+    display: flex;
+    flex-direction: column;
 
-padding:260px 60px 220px 60px;
-
-}
-
-.host-content{
-
-flex:1;
-
-display:flex;
-
-gap:40px;
-
-overflow:hidden;
+    padding: 60px;
 
 }
 
-.control-panel{
+.host-content {
 
-flex:1;
+    flex: 1;
 
-overflow-y:auto;
+    display: flex;
 
-}
+    gap: 40px;
 
-.answer-panel{
-
-flex:1;
-
-overflow-y:auto;
+    overflow: hidden;
 
 }
 
-.control-section{
+.control-panel {
+    flex: 1;
+    overflow-y: auto;
+}
 
-background:rgba(20,0,45,0.9);
+.answer-panel {
+    flex: 1;
+    overflow-y: auto;
+}
 
-border:2px solid rgba(255,255,255,0.2);
+.control-section {
 
-border-radius:18px;
+    background: rgba(20, 0, 45, 0.9);
 
-padding:30px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
 
-margin-bottom:25px;
+    border-radius: 18px;
+
+    padding: 30px;
+
+    margin-bottom: 25px;
 
 }
 
 /* INPUTS */
 
-.input-field{
+.input-field {
 
-width:100%;
+    width: 100%;
 
-padding:16px;
+    padding: 16px;
 
-margin-bottom:18px;
+    margin-bottom: 18px;
 
-border-radius:10px;
+    border-radius: 10px;
 
-border:1px solid rgba(255,255,255,0.3);
+    border: 1px solid rgba(255, 255, 255, 0.3);
 
-background:rgba(0,0,0,0.6);
+    background: rgba(0, 0, 0, 0.6);
 
-color:white;
+    color: white;
 
-font-size:1.3rem;
+    font-size: 1.3rem;
 
 }
 
@@ -587,79 +546,82 @@ font-size:1.3rem;
 STRIKE OVERLAY
 ===================================== */
 
-.massive-strike{
+.massive-strike {
 
-position:fixed;
+    position: fixed;
 
-top:0;
-left:0;
+    top: 0;
+    left: 0;
 
-width:100vw;
-height:100vh;
+    width: 100vw;
+    height: 100vh;
 
-display:flex;
-align-items:center;
-justify-content:center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-font-size:40rem;
+    font-size: 40rem;
 
-color:#FF1744;
+    color: #FF1744;
 
-text-shadow:0 0 120px red;
+    text-shadow: 0 0 120px red;
 
-background:rgba(255,0,0,0.25);
+    background: rgba(255, 0, 0, 0.25);
 
-z-index:9999;
+    z-index: 9999;
 
-animation:strikeFlash 0.6s infinite;
+    animation: strikeFlash 0.6s infinite;
 
 }
 
-@keyframes strikeFlash{
+@keyframes strikeFlash {
 
-0%,100%{opacity:0.8;}
-50%{opacity:0.4;}
+    0%,
+    100% {
+        opacity: 0.8;
+    }
 
+    50% {
+        opacity: 0.4;
+    }
 }
 
 /* =====================================
 FOOTER
 ===================================== */
 
-.global-footer{
+.global-footer {
 
-position:fixed;
+    position: relative;
+    /* changed from fixed */
 
-bottom:0;
-left:0;
+    width: 100%;
 
-width:100%;
+    padding: 60px;
 
-padding:40px;
+    display: flex;
+    justify-content: center;
 
-display:flex;
-justify-content:center;
+    margin-top: 120px;
 
-background:linear-gradient(
-to top,
-rgba(0,0,0,0.9),
-rgba(0,0,0,0.5),
-transparent
-);
+    background: linear-gradient(to top,
+            rgba(0, 0, 0, 0.9),
+            rgba(0, 0, 0, 0.5),
+            transparent);
 
 }
 
-.vsm-branding{
+.vsm-branding {
 
-font-size:2.6rem;
+    font-size: 2.6rem;
 
-letter-spacing:6px;
+    letter-spacing: 6px;
 
-font-weight:800;
+    font-weight: 800;
 
-text-shadow:
-0 0 20px rgba(255,255,255,0.7),
-0 0 40px rgba(255,215,0,0.6);
+    text-shadow:
+        0 0 20px rgba(255, 255, 255, 0.7),
+        0 0 40px rgba(255, 215, 0, 0.6);
 
 }
 
@@ -667,15 +629,463 @@ text-shadow:
 SCROLLBAR
 ===================================== */
 
-::-webkit-scrollbar{
-width:8px;
+::-webkit-scrollbar {
+    width: 8px;
 }
 
-::-webkit-scrollbar-track{
-background:rgba(0,0,0,0.4);
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.4);
 }
 
-::-webkit-scrollbar-thumb{
-background:#FFD700;
-border-radius:10px;
+::-webkit-scrollbar-thumb {
+    background: #FFD700;
+    border-radius: 10px;
+}
+
+/* =====================================
+   RESPONSIVE — TABLETS (max-width: 1024px)
+===================================== */
+
+@media(max-width:1024px) {
+
+    .global-header {
+        position: relative;
+        padding: 20px 30px;
+    }
+
+    .brand-logo {
+        width: 90px;
+        height: 90px;
+        animation: none;
+    }
+
+    .gala-title-container {
+        margin: 20px 0;
+    }
+
+    .gala-title {
+        font-size: 2.4rem;
+        letter-spacing: 6px;
+    }
+
+    .display-container,
+    .fm-container,
+    .index-container {
+        padding: 40px 30px;
+    }
+
+    .round-title,
+    .fm-title {
+        font-size: 3.5rem;
+        margin-bottom: 25px;
+    }
+
+    .fm-question-display {
+        padding: 35px;
+        max-width: 100%;
+    }
+
+    .fm-question-label {
+        font-size: 1.8rem;
+    }
+
+    .fm-question-text {
+        font-size: 3rem;
+    }
+
+    .timer-section {
+        padding: 40px 60px;
+    }
+
+    .timer-display {
+        font-size: 7rem;
+    }
+
+    .scoreboard {
+        gap: 30px;
+    }
+
+    .team-box {
+        padding: 30px;
+    }
+
+    .team-name {
+        font-size: 2.6rem;
+    }
+
+    .score {
+        font-size: 3.5rem;
+    }
+
+    .player-scores {
+        font-size: 1.8rem;
+    }
+
+    .board-grid {
+        gap: 20px;
+    }
+
+    .answer-box {
+        min-height: 90px;
+        padding: 20px 25px;
+        font-size: 2rem;
+    }
+
+    .answer-box.placeholder {
+        font-size: 3rem;
+    }
+
+    /* HOST PANELS — stack vertically */
+    .host-container {
+        padding: 30px;
+    }
+
+    .host-content {
+        flex-direction: column;
+        overflow: visible;
+    }
+
+    .control-panel,
+    .answer-panel {
+        flex: none;
+        width: 100%;
+        overflow: visible;
+    }
+
+    .vsm-branding {
+        font-size: 1.6rem;
+        letter-spacing: 3px;
+    }
+
+    .global-footer {
+        padding: 30px;
+        margin-top: 60px;
+    }
+
+    .massive-strike {
+        font-size: 20rem;
+    }
+
+}
+
+/* =====================================
+   RESPONSIVE — PHONES (max-width: 768px)
+===================================== */
+
+@media(max-width:768px) {
+
+    .global-header {
+        position: relative;
+        padding: 15px 15px;
+    }
+
+    .brand-logo {
+        width: 60px;
+        height: 60px;
+        filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.5));
+        animation: none;
+    }
+
+    .gala-title-container {
+        margin: 12px 0;
+    }
+
+    .gala-title {
+        font-size: 1.8rem;
+        letter-spacing: 4px;
+    }
+
+    .display-container,
+    .fm-container,
+    .index-container {
+        padding: 25px 15px;
+    }
+
+    .round-title,
+    .fm-title {
+        font-size: 2.4rem;
+        margin-bottom: 18px;
+    }
+
+    .fm-question-display {
+        padding: 20px;
+        border-radius: 16px;
+        border-width: 3px;
+        margin-bottom: 25px;
+    }
+
+    .fm-question-label {
+        font-size: 1.4rem;
+        letter-spacing: 2px;
+        margin-bottom: 10px;
+    }
+
+    .fm-question-text {
+        font-size: 2rem;
+    }
+
+    .timer-section {
+        padding: 25px 30px;
+        border-radius: 18px;
+        border-width: 3px;
+        margin-bottom: 30px;
+    }
+
+    .timer-label {
+        font-size: 1.6rem;
+        margin-bottom: 10px;
+    }
+
+    .timer-display {
+        font-size: 4.5rem;
+    }
+
+    .scoreboard {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .team-box {
+        padding: 22px;
+        border-radius: 16px;
+    }
+
+    .team-name {
+        font-size: 2rem;
+        letter-spacing: 2px;
+        margin-bottom: 10px;
+    }
+
+    .score {
+        font-size: 3rem;
+        margin-bottom: 10px;
+    }
+
+    .player-scores {
+        font-size: 1.5rem;
+    }
+
+    .answer-board {
+        margin-top: 15px;
+    }
+
+    .board-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        max-width: 100%;
+    }
+
+    .answer-box {
+        min-height: 65px;
+        padding: 16px 18px;
+        font-size: 1.5rem;
+        border-radius: 10px;
+    }
+
+    .answer-box.placeholder {
+        font-size: 2rem;
+    }
+
+    .btn {
+        padding: 14px;
+        font-size: 1.2rem;
+        width: 100%;
+    }
+
+    .host-container {
+        padding: 20px 10px;
+    }
+
+    .host-content {
+        flex-direction: column;
+        gap: 15px;
+        overflow: visible;
+    }
+
+    .control-panel,
+    .answer-panel {
+        flex: none;
+        width: 100%;
+        overflow: visible;
+    }
+
+    .control-section {
+        padding: 18px;
+        margin-bottom: 12px;
+        border-radius: 12px;
+    }
+
+    .control-section h3 {
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+    }
+
+    .input-field {
+        padding: 14px;
+        font-size: 1.2rem;
+        margin-bottom: 12px;
+    }
+
+    .vsm-branding {
+        font-size: 1rem;
+        letter-spacing: 2px;
+    }
+
+    .global-footer {
+        padding: 20px;
+        margin-top: 40px;
+    }
+
+    .massive-strike {
+        font-size: 12rem;
+    }
+
+}
+
+/* =====================================
+   RESPONSIVE — SMALL PHONES (max-width: 480px)
+===================================== */
+
+@media(max-width:480px) {
+
+    .global-header {
+        padding: 10px 10px;
+    }
+
+    .brand-logo {
+        width: 45px;
+        height: 45px;
+    }
+
+    .gala-title {
+        font-size: 1.35rem;
+        letter-spacing: 3px;
+    }
+
+    .gala-title-container {
+        margin: 8px 0;
+    }
+
+    .display-container,
+    .fm-container,
+    .index-container {
+        padding: 18px 10px;
+    }
+
+    .round-title,
+    .fm-title {
+        font-size: 1.8rem;
+        margin-bottom: 12px;
+    }
+
+    .fm-question-display {
+        padding: 15px;
+        border-radius: 12px;
+        margin-bottom: 18px;
+    }
+
+    .fm-question-label {
+        font-size: 1.1rem;
+        letter-spacing: 1px;
+    }
+
+    .fm-question-text {
+        font-size: 1.6rem;
+    }
+
+    .timer-section {
+        padding: 18px 20px;
+        border-radius: 14px;
+        margin-bottom: 18px;
+    }
+
+    .timer-label {
+        font-size: 1.2rem;
+    }
+
+    .timer-display {
+        font-size: 3.5rem;
+    }
+
+    .scoreboard {
+        gap: 10px;
+        margin-bottom: 18px;
+    }
+
+    .team-box {
+        padding: 16px;
+        border-radius: 12px;
+    }
+
+    .team-name {
+        font-size: 1.6rem;
+        margin-bottom: 8px;
+    }
+
+    .score {
+        font-size: 2.4rem;
+        margin-bottom: 8px;
+    }
+
+    .player-scores {
+        font-size: 1.25rem;
+        gap: 6px;
+    }
+
+    .board-grid {
+        gap: 8px;
+    }
+
+    .answer-box {
+        min-height: 50px;
+        padding: 12px 14px;
+        font-size: 1.3rem;
+        border-radius: 8px;
+    }
+
+    .answer-box.placeholder {
+        font-size: 1.6rem;
+    }
+
+    .btn {
+        padding: 12px;
+        font-size: 1.05rem;
+        border-radius: 8px;
+    }
+
+    .host-container {
+        padding: 15px 8px;
+    }
+
+    .control-section {
+        padding: 14px;
+        margin-bottom: 10px;
+        border-radius: 10px;
+    }
+
+    .control-section h3 {
+        font-size: 1.15rem;
+    }
+
+    .input-field {
+        padding: 12px;
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+    }
+
+    .vsm-branding {
+        font-size: 0.8rem;
+        letter-spacing: 1px;
+    }
+
+    .global-footer {
+        padding: 15px;
+        margin-top: 25px;
+    }
+
+    .massive-strike {
+        font-size: 8rem;
+    }
+
 }

@@ -103,358 +103,502 @@
     </div>
 
 
-   <style>
-
-/* =====================================
+    <style>
+        /* =====================================
 RESET
 ===================================== */
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-/* =====================================
+        /* =====================================
 INDEX PAGE BACKGROUND
 ===================================== */
 
-.index-page{
+        .index-page {
 
-background:linear-gradient(
-135deg,
-#0a0015 0%,
-#1a0033 50%,
-#0a0015 100%
-);
+            background: linear-gradient(135deg,
+                    #0a0015 0%,
+                    #1a0033 50%,
+                    #0a0015 100%);
 
-min-height:100vh;
+            min-height: 100vh;
 
-position:relative;
+            position: relative;
 
-display:flex;
-flex-direction:column;
-align-items:center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
 
-}
+        }
 
-/* =====================================
+        /* =====================================
 STAR EFFECT
 ===================================== */
 
-.stars{
+        .stars {
 
-position:absolute;
-width:100%;
-height:100%;
+            position: absolute;
+            width: 100%;
+            height: 100%;
 
-top:0;
-left:0;
+            top: 0;
+            left: 0;
 
-pointer-events:none;
+            pointer-events: none;
 
-}
+        }
 
-.stars::before{
+        .stars::before {
 
-content:'';
+            content: '';
 
-position:absolute;
+            position: absolute;
 
-width:3px;
-height:3px;
+            width: 3px;
+            height: 3px;
 
-background:white;
+            background: white;
 
-border-radius:50%;
+            border-radius: 50%;
 
-top:20%;
-left:10%;
+            top: 20%;
+            left: 10%;
 
-opacity:0.8;
+            opacity: 0.8;
 
-animation:twinkle 3s infinite;
+            animation: twinkle 3s infinite;
 
-}
+        }
 
-@keyframes twinkle{
+        @keyframes twinkle {
 
-0%,100%{opacity:0.3;}
-50%{opacity:1;}
+            0%,
+            100% {
+                opacity: 0.3;
+            }
 
-}
+            50% {
+                opacity: 1;
+            }
 
-/* =====================================
+        }
+
+        /* =====================================
 MAIN CONTAINER
 ===================================== */
 
-.index-container{
+        .index-container {
 
-position:relative;
+            position: relative;
 
-z-index:10;
+            z-index: 10;
 
-width:100%;
-max-width:1200px;
+            width: 100%;
+            max-width: 1200px;
 
-display:flex;
-flex-direction:column;
-align-items:center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
 
-padding-top:120px;
-padding-bottom:200px;
+            padding-top: 40px;
+            padding-bottom: 60px;
 
-}
+        }
 
-/* =====================================
+        /* =====================================
 NEON GLOW
 ===================================== */
 
-.neon-glow{
+        .neon-glow {
 
-position:absolute;
+            position: absolute;
 
-top:-50px;
-left:50%;
+            top: -50px;
+            left: 50%;
 
-transform:translateX(-50%);
+            transform: translateX(-50%);
 
-width:700px;
-height:400px;
+            width: 700px;
+            height: 400px;
 
-background:radial-gradient(
-ellipse at center,
-rgba(255,215,0,0.15) 0%,
-transparent 70%
-);
+            background: radial-gradient(ellipse at center,
+                    rgba(255, 215, 0, 0.15) 0%,
+                    transparent 70%);
 
-filter:blur(60px);
+            filter: blur(60px);
 
-pointer-events:none;
+            pointer-events: none;
 
-}
+        }
 
-/* =====================================
+        /* =====================================
 MAIN TITLE
 ===================================== */
 
-.main-title{
+        .main-title {
 
-font-size:4.5rem;
+            font-size: 4.5rem;
 
-font-weight:900;
+            font-weight: 900;
 
-text-align:center;
+            text-align: center;
 
-margin-bottom:10px;
+            margin-bottom: 10px;
 
-color:#ffd700;
+            color: #ffd700;
 
-letter-spacing:4px;
+            letter-spacing: 4px;
 
-text-shadow:
-0 0 30px rgba(255,215,0,0.9),
-0 0 60px rgba(255,215,0,0.4),
-2px 2px 8px rgba(0,0,0,0.8);
+            text-shadow:
+                0 0 30px rgba(255, 215, 0, 0.9),
+                0 0 60px rgba(255, 215, 0, 0.4),
+                2px 2px 8px rgba(0, 0, 0, 0.8);
 
-animation:titleGlow 3s ease-in-out infinite;
+            animation: titleGlow 3s ease-in-out infinite;
 
-}
+        }
 
-@keyframes titleGlow{
+        @keyframes titleGlow {
 
-0%,100%{
+            0%,
+            100% {
 
-text-shadow:
-0 0 30px rgba(255,215,0,0.9),
-0 0 60px rgba(255,215,0,0.4),
-2px 2px 8px rgba(0,0,0,0.8);
+                text-shadow:
+                    0 0 30px rgba(255, 215, 0, 0.9),
+                    0 0 60px rgba(255, 215, 0, 0.4),
+                    2px 2px 8px rgba(0, 0, 0, 0.8);
 
-}
+            }
 
-50%{
+            50% {
 
-text-shadow:
-0 0 50px rgba(255,215,0,1),
-0 0 100px rgba(255,215,0,0.7),
-2px 2px 8px rgba(0,0,0,0.8);
+                text-shadow:
+                    0 0 50px rgba(255, 215, 0, 1),
+                    0 0 100px rgba(255, 215, 0, 0.7),
+                    2px 2px 8px rgba(0, 0, 0, 0.8);
 
-}
+            }
 
-}
+        }
 
-/* =====================================
+        /* =====================================
 SUBTITLE
 ===================================== */
 
-.subtitle-text{
+        .subtitle-text {
 
-font-size:1.8rem;
+            font-size: 1.8rem;
 
-color:#ff69b4;
+            color: #ff69b4;
 
-margin-bottom:60px;
+            margin-bottom: 60px;
 
-font-weight:bold;
+            font-weight: bold;
 
-letter-spacing:2px;
+            letter-spacing: 2px;
 
-text-shadow:0 0 15px rgba(255,105,180,0.7);
+            text-shadow: 0 0 15px rgba(255, 105, 180, 0.7);
 
-}
+        }
 
-/* =====================================
+        /* =====================================
 BUTTON GRID
 ===================================== */
 
-.button-grid{
+        .button-grid {
 
-display:grid;
+            display: grid;
 
-grid-template-columns:repeat(2,320px);
+            grid-template-columns: repeat(2, 320px);
 
-gap:40px;
+            gap: 40px;
 
-justify-content:center;
+            justify-content: center;
 
-margin-top:20px;
+            margin-top: 20px;
 
-}
+        }
 
-/* =====================================
+        /* =====================================
 CONTROL BUTTON
 ===================================== */
 
-.control-button{
+        .control-button {
 
-text-decoration:none;
+            text-decoration: none;
 
-display:flex;
+            display: flex;
 
-flex-direction:column;
+            flex-direction: column;
 
-align-items:center;
-justify-content:center;
+            align-items: center;
+            justify-content: center;
 
-padding:45px 30px;
+            padding: 45px 30px;
 
-border-radius:18px;
+            border-radius: 18px;
 
-font-weight:bold;
+            font-weight: bold;
 
-font-size:1.2rem;
+            font-size: 1.2rem;
 
-border:2px solid;
+            border: 2px solid;
 
-transition:all 0.3s ease;
+            transition: all 0.3s ease;
 
-cursor:pointer;
+            cursor: pointer;
 
-color:white;
+            color: white;
 
-position:relative;
+            position: relative;
 
-}
+        }
 
-.control-button:hover{
+        .control-button:hover {
 
-transform:translateY(-8px) scale(1.05);
+            transform: translateY(-8px) scale(1.05);
 
-}
+        }
 
-/* =====================================
+        /* =====================================
 BUTTON ICON
 ===================================== */
 
-.button-icon{
+        .button-icon {
 
-font-size:3.2rem;
+            font-size: 3.2rem;
 
-margin-bottom:12px;
+            margin-bottom: 12px;
 
-}
+        }
 
-/* =====================================
+        /* =====================================
 BUTTON TEXT
 ===================================== */
 
-.button-text{
+        .button-text {
 
-font-size:1.5rem;
+            font-size: 1.5rem;
 
-margin-bottom:6px;
+            margin-bottom: 6px;
 
-}
+        }
 
-.button-description{
+        .button-description {
 
-font-size:0.9rem;
+            font-size: 0.9rem;
 
-opacity:0.9;
+            opacity: 0.9;
 
-letter-spacing:1px;
+            letter-spacing: 1px;
 
-}
+        }
 
-/* =====================================
+        /* =====================================
 BUTTON COLORS
 ===================================== */
 
-.foff-btn{
-background:linear-gradient(135deg,#ff1744,#c41c3b);
-border-color:#ff5252;
-}
+        .foff-btn {
+            background: linear-gradient(135deg, #ff1744, #c41c3b);
+            border-color: #ff5252;
+        }
 
-.fm-btn{
-background:linear-gradient(135deg,#00e676,#00c853);
-border-color:#1de9b6;
-}
+        .fm-btn {
+            background: linear-gradient(135deg, #00e676, #00c853);
+            border-color: #1de9b6;
+        }
 
-.display-btn{
-background:linear-gradient(135deg,#2979f0,#1565c0);
-border-color:#42a5f5;
-}
+        .display-btn {
+            background: linear-gradient(135deg, #2979f0, #1565c0);
+            border-color: #42a5f5;
+        }
 
-.display-fm-btn{
-background:linear-gradient(135deg,#9c27b0,#7b1fa2);
-border-color:#ba68c8;
-}
+        .display-fm-btn {
+            background: linear-gradient(135deg, #9c27b0, #7b1fa2);
+            border-color: #ba68c8;
+        }
 
-/* =====================================
+        /* =====================================
 FOOTER TEXT
 ===================================== */
 
-.footer-credit{
+        .footer-credit {
 
-text-align:center;
+            text-align: center;
 
-color:#bbb;
+            color: #bbb;
 
-font-size:1rem;
+            font-size: 1rem;
 
-margin-top:60px;
+            margin-top: 60px;
 
-}
+        }
 
-.footer-credit p{
+        .footer-credit p {
 
-margin:5px 0;
+            margin: 5px 0;
 
-}
+        }
 
-</style>
+        /* =====================================
+   INDEX PAGE — RESPONSIVE
+===================================== */
+
+        @media(max-width:1024px) {
+
+            .index-container {
+                padding-top: 30px;
+                padding-bottom: 50px;
+            }
+
+            .main-title {
+                font-size: 3rem;
+            }
+
+            .subtitle-text {
+                font-size: 1.4rem;
+                margin-bottom: 35px;
+            }
+
+            .button-grid {
+                grid-template-columns: repeat(2, 260px);
+                gap: 25px;
+            }
+
+            .control-button {
+                padding: 32px 20px;
+            }
+
+            .neon-glow {
+                width: 500px;
+                height: 300px;
+            }
+
+        }
+
+        @media(max-width:768px) {
+
+            .index-container {
+                padding-top: 20px;
+                padding-bottom: 40px;
+            }
+
+            .main-title {
+                font-size: 2.2rem;
+                letter-spacing: 2px;
+                margin-bottom: 8px;
+            }
+
+            .subtitle-text {
+                font-size: 1.2rem;
+                margin-bottom: 25px;
+            }
+
+            .button-grid {
+                grid-template-columns: 1fr;
+                gap: 14px;
+                max-width: 320px;
+                width: 100%;
+            }
+
+            .control-button {
+                padding: 24px 20px;
+                border-radius: 14px;
+            }
+
+            .button-icon {
+                font-size: 2.4rem;
+                margin-bottom: 8px;
+            }
+
+            .button-text {
+                font-size: 1.3rem;
+            }
+
+            .button-description {
+                font-size: 0.85rem;
+            }
+
+            .neon-glow {
+                width: 300px;
+                height: 200px;
+            }
+
+            .footer-credit {
+                margin-top: 25px;
+                font-size: 0.9rem;
+            }
+
+        }
+
+        @media(max-width:480px) {
+
+            .index-container {
+                padding-top: 15px;
+                padding-bottom: 30px;
+            }
+
+            .main-title {
+                font-size: 1.6rem;
+                letter-spacing: 1px;
+            }
+
+            .subtitle-text {
+                font-size: 1rem;
+                margin-bottom: 18px;
+            }
+
+            .button-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+                max-width: 280px;
+            }
+
+            .control-button {
+                padding: 20px 14px;
+                border-radius: 12px;
+            }
+
+            .button-icon {
+                font-size: 2rem;
+                margin-bottom: 6px;
+            }
+
+            .button-text {
+                font-size: 1.15rem;
+            }
+
+            .button-description {
+                font-size: 0.8rem;
+            }
+
+            .neon-glow {
+                width: 200px;
+                height: 150px;
+                filter: blur(40px);
+            }
+
+            .footer-credit {
+                margin-top: 18px;
+                font-size: 0.8rem;
+            }
+
+        }
+    </style>
 
 
+    <!-- FOOTER HIDDEN
     <footer class="global-footer">
-
         <div class="vsm-branding">
-
             Made with <span class="heart-icon">❤️</span>
             by VSM Generation Gala ● All Rights Reserved
-
         </div>
-
     </footer>
+    -->
 
 </body>
 
