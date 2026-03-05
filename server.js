@@ -1,7 +1,6 @@
-const express = require('express');
-const http = require('http');
-const socketIO = require('socket.io');
-const path = require('path');
+const express = require("express");
+const http = require("http");
+const socketIO = require("socket.io");
 
 const app = express();
 const server = http.createServer(app);
@@ -13,50 +12,76 @@ const io = socketIO(server, {
   }
 });
 
-app.use(express.static('public'));
-app.use('/questions', express.static('questions'));
+app.use(express.static("public"));
+app.use("/questions", express.static("questions"));
 
 let timerInterval = null;
 
-let gameState = {
 
-  teamA: {
-    name: 'Team A',
-    score: 0,
-    strikes: 0,
-    players: ['Player A1', 'Player A2'],
-    playerScores: [0, 0],
-    fmScoreAdded: false
-  },
+/* -----------------------------
+DEFAULT STATE
+------------------------------*/
 
-  teamB: {
-    name: 'Team B',
-    score: 0,
-    strikes: 0,
-    players: ['Player B1', 'Player B2'],
-    playerScores: [0, 0],
-    fmScoreAdded: false
-  },
+function createDefaultState() {
 
-  currentRound: 'foff',
-  currentSubRound: 1,
-  currentQuestion: null,
-  currentQuestionIndex: 0,
-  revealedAnswers: [],
-  allQuestions: [],
-  timer: 0,
-  timerRunning: false,
-  showThankYou: false,
-  activePlayer: 'none'
+  return {
 
-};
+    teamA: {
+      name: "Team A",
+      score: 0,
+      strikes: 0,
+      players: ["Player A1", "Player A2"],
+      playerScores: [0, 0],
+      fmScoreAdded: false
+    },
 
-io.on('connection', (socket) => {
+    teamB: {
+      name: "Team B",
+      score: 0,
+      strikes: 0,
+      players: ["Player B1", "Player B2"],
+      playerScores: [0, 0],
+      fmScoreAdded: false
+    },
 
-  console.log('Client connected:', socket.id);
+    currentRound: "foff",
+    currentSubRound: 1,
+    currentQuestion: null,
+    currentQuestionIndex: 0,
+    revealedAnswers: [],
+    allQuestions: [],
+    timer: 0,
+    timerRunning: false,
+    showThankYou: false,
+    activePlayer: "none"
 
-  socket.emit('stateUpdate', gameState);
+  };
 
+}
+
+let gameState = createDefaultState();
+
+
+/* -----------------------------
+SOCKET CONNECTION
+------------------------------*/
+
+io.on("connection", (socket) => {
+
+  console.log("Client connected:", socket.id);
+
+  socket.emit("stateUpdate", gameState);
+
+  /* FIX #6: Resync state on reconnect */
+  socket.on("reconnect", () => {
+    console.log("Client reconnected:", socket.id);
+    socket.emit("stateUpdate", gameState);
+  });
+
+
+  /* -----------------------------
+  QUESTION BROADCAST
+  ------------------------------*/
 
   socket.on("broadcastCurrentQuestion", (questionData) => {
 
@@ -67,14 +92,31 @@ io.on('connection', (socket) => {
   });
 
 
-  socket.on('updateTeams', (data) => {
+  /* -----------------------------
+  ROUND CHANGE
+  ------------------------------*/
+
+  socket.on("roundChanged", (data) => {
+
+    gameState.currentRound = data.round || "foff";
+
+    io.emit("roundChanged", { round: gameState.currentRound });
+
+  });
+
+
+  /* -----------------------------
+  TEAM UPDATE
+  ------------------------------*/
+
+  socket.on("updateTeams", (data) => {
 
     gameState.teamA.name = data.teamA || gameState.teamA.name;
     gameState.teamB.name = data.teamB || gameState.teamB.name;
 
-    io.emit('stateUpdate', gameState);
+    io.emit("stateUpdate", gameState);
 
-    io.emit('teamUpdate', {
+    io.emit("teamUpdate", {
       teamA: gameState.teamA,
       teamB: gameState.teamB
     });
@@ -82,87 +124,72 @@ io.on('connection', (socket) => {
   });
 
 
-  socket.on('updatePlayers', (data) => {
+  socket.on("updatePlayers", (data) => {
 
     gameState.teamA.players = data.playersA || gameState.teamA.players;
     gameState.teamB.players = data.playersB || gameState.teamB.players;
 
-    io.emit('stateUpdate', gameState);
+    io.emit("stateUpdate", gameState);
 
   });
 
 
-  socket.on('setActivePlayer', (data) => {
+  socket.on("setActivePlayer", (data) => {
 
-    gameState.activePlayer = data.player;
+    gameState.activePlayer = data.player || "none";
 
-    io.emit('stateUpdate', gameState);
-
-  });
-
-
-  socket.on('resetGame', () => {
-
-    gameState = {
-
-      ...gameState,
-
-      teamA: {
-        name: 'Team A',
-        score: 0,
-        strikes: 0,
-        players: ['Player A1', 'Player A2'],
-        playerScores: [0, 0],
-        fmScoreAdded: false
-      },
-
-      teamB: {
-        name: 'Team B',
-        score: 0,
-        strikes: 0,
-        players: ['Player B1', 'Player B2'],
-        playerScores: [0, 0],
-        fmScoreAdded: false
-      },
-
-      revealedAnswers: [],
-      currentQuestionIndex: 0,
-      currentRound: 'foff',
-      currentSubRound: 1,
-      showThankYou: false,
-      activePlayer: 'none'
-
-    };
-
-    io.emit('stateUpdate', gameState);
+    io.emit("stateUpdate", gameState);
 
   });
 
 
+  /* -----------------------------
+  RESET GAME
+  -----------------------------*/
 
-  socket.on('addScore', (data) => {
+  socket.on("resetGame", () => {
 
-    if (data.team === 'A') {
+    /* FIX #1: CRITICAL - Clear timer interval before reset */
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
 
-      if (data.playerIndex !== undefined) {
-        gameState.teamA.playerScores[data.playerIndex] += data.points;
-      } else {
-        gameState.teamA.score += data.points;
+    gameState = createDefaultState();
+
+    io.emit("stateUpdate", gameState);
+
+  });
+
+
+  /* -----------------------------
+  SCORE
+  ------------------------------*/
+
+  socket.on("addScore", (data) => {
+
+    const teamKey = data.team === "A" ? "teamA" : "teamB";
+    const team = gameState[teamKey];
+
+    if (data.playerIndex !== undefined) {
+
+      team.playerScores[data.playerIndex] += data.points;
+
+      if (team.playerScores[data.playerIndex] < 0) {
+        team.playerScores[data.playerIndex] = 0;
       }
 
     } else {
 
-      if (data.playerIndex !== undefined) {
-        gameState.teamB.playerScores[data.playerIndex] += data.points;
-      } else {
-        gameState.teamB.score += data.points;
-      }
+      team.score += data.points;
+
+      if (team.score < 0) team.score = 0;
 
     }
 
-    io.emit('stateUpdate', gameState);
+    io.emit("stateUpdate", gameState);
 
-    io.emit('scoreUpdate', {
+    io.emit("scoreUpdate", {
       teamA: gameState.teamA.score,
       teamB: gameState.teamB.score
     });
@@ -170,18 +197,15 @@ io.on('connection', (socket) => {
   });
 
 
+  socket.on("setScore", (data) => {
 
-  socket.on('setScore', (data) => {
+    const teamKey = data.team === "A" ? "teamA" : "teamB";
 
-    if (data.team === 'A') {
-      gameState.teamA.score = Math.max(0, data.score);
-    } else {
-      gameState.teamB.score = Math.max(0, data.score);
-    }
+    gameState[teamKey].score = Math.max(0, data.score);
 
-    io.emit('stateUpdate', gameState);
+    io.emit("stateUpdate", gameState);
 
-    io.emit('scoreUpdate', {
+    io.emit("scoreUpdate", {
       teamA: gameState.teamA.score,
       teamB: gameState.teamB.score
     });
@@ -189,211 +213,196 @@ io.on('connection', (socket) => {
   });
 
 
+  /* -----------------------------
+  FAST MONEY TOTAL
+  ------------------------------*/
 
-  socket.on('revealTotal', (data) => {
+  socket.on("revealTotal", (data) => {
 
-    const team = data.team;
+    const team = data.team === "A" ? "teamA" : "teamB";
+    const t = gameState[team];
 
-    if (team === 'A' && !gameState.teamA.fmScoreAdded) {
+    if (!t.fmScoreAdded) {
 
-      gameState.teamA.score +=
-        gameState.teamA.playerScores[0] +
-        gameState.teamA.playerScores[1];
-
-      gameState.teamA.fmScoreAdded = true;
-
-    }
-
-    else if (team === 'B' && !gameState.teamB.fmScoreAdded) {
-
-      gameState.teamB.score +=
-        gameState.teamB.playerScores[0] +
-        gameState.teamB.playerScores[1];
-
-      gameState.teamB.fmScoreAdded = true;
+      t.score += t.playerScores[0] + t.playerScores[1];
+      t.fmScoreAdded = true;
 
     }
 
-    io.emit('stateUpdate', gameState);
-
-    io.emit('revealTotal', data);
+    io.emit("stateUpdate", gameState);
+    io.emit("revealTotal", data);
 
   });
 
 
+  /* -----------------------------
+  STRIKES
+  ------------------------------*/
 
-  socket.on('addStrike', (data) => {
+  socket.on("addStrike", (data) => {
 
-    if (data.team === 'A') {
+    const team = data.team === "A" ? "teamA" : "teamB";
 
-      gameState.teamA.strikes = Math.min(3, gameState.teamA.strikes + 1);
+    gameState[team].strikes = Math.min(3, gameState[team].strikes + 1);
 
-    }
+    io.emit("stateUpdate", gameState);
 
-    else if (data.team === 'B') {
-
-      gameState.teamB.strikes = Math.min(3, gameState.teamB.strikes + 1);
-
-    }
-
-    io.emit('stateUpdate', gameState);
-
-    io.emit('strikeUpdate', {
+    io.emit("strikeUpdate", {
       teamA: gameState.teamA.strikes,
       teamB: gameState.teamB.strikes
     });
 
-    io.emit('playBuzzer');
+    io.emit("playBuzzer");
 
   });
 
 
-
-  socket.on('resetStrikes', () => {
+  socket.on("resetStrikes", () => {
 
     gameState.teamA.strikes = 0;
     gameState.teamB.strikes = 0;
 
-    io.emit('stateUpdate', gameState);
+    io.emit("stateUpdate", gameState);
 
-    io.emit('strikeUpdate', {
-      teamA: 0,
-      teamB: 0
-    });
+    io.emit("strikeUpdate", { teamA: 0, teamB: 0 });
 
   });
 
 
+  /* -----------------------------
+  LOAD QUESTIONS
+  ------------------------------*/
 
-  socket.on('loadQuestions', (data) => {
+  socket.on("loadQuestions", (data) => {
 
-    gameState.allQuestions = data.questions;
-
+    gameState.allQuestions = data.questions || [];
     gameState.currentQuestionIndex = 0;
-
-    gameState.currentQuestion = gameState.allQuestions[0];
-
+    gameState.currentQuestion = gameState.allQuestions[0] || null;
     gameState.revealedAnswers = [];
 
-    io.emit('stateUpdate', gameState);
+    io.emit("stateUpdate", gameState);
 
-    io.emit('questionUpdate', gameState.currentQuestion);
-
-  });
-
-
-
-  socket.on('clearBoard', () => {
-
-    gameState.revealedAnswers = [];
-
-    io.emit('stateUpdate', gameState);
-
-  });
-
-
-
-  socket.on('markCross', () => {
-
-    const maxAnswers =
-      gameState.currentQuestion?.answers?.length || 8;
-
-    if (gameState.revealedAnswers.length < maxAnswers) {
-
-      const wrongAnswer = { answer: "❌", weight: 0 };
-
-      gameState.revealedAnswers.push(wrongAnswer);
-
-      io.emit('stateUpdate', gameState);
-
-      io.emit('answerRevealed', {
-        answer: wrongAnswer,
-        team: gameState.activePlayer ? gameState.activePlayer[0] : 'A',
-        playerIndex: 0
-      });
-
+    if (gameState.currentQuestion) {
+      io.emit("questionUpdate", gameState.currentQuestion);
     }
 
   });
 
 
+  /* -----------------------------
+  BOARD CONTROL
+  ------------------------------*/
 
-  socket.on('revealAnswer', (data) => {
+  socket.on("clearBoard", () => {
+
+    gameState.revealedAnswers = [];
+    io.emit("stateUpdate", gameState);
+
+  });
+
+
+  socket.on("markCross", () => {
+
+    const maxAnswers = gameState.currentQuestion?.answers?.length || 8;
+
+    if (gameState.revealedAnswers.length >= maxAnswers) return;
+
+    const wrongAnswer = { answer: "❌", weight: 0 };
+
+    gameState.revealedAnswers.push(wrongAnswer);
+
+    io.emit("stateUpdate", gameState);
+
+    io.emit("answerRevealed", {
+      answer: wrongAnswer,
+      team: gameState.activePlayer?.[0] || "A",
+      playerIndex: 0
+    });
+
+  });
+
+
+  socket.on("revealAnswer", (data) => {
 
     const answer = data.answer;
-    const team = data.team;
-    const playerIndex = data.playerIndex;
+
+    if (!answer || !answer.answer) return;
 
     if (gameState.revealedAnswers.some(a => a.answer === answer.answer)) {
       return;
     }
 
-    gameState.revealedAnswers.push(answer);
+    const crossIndex = gameState.revealedAnswers.findIndex(a => a.answer === "❌");
+    if (crossIndex !== -1) {
+      gameState.revealedAnswers[crossIndex] = answer;
+    } else {
+      gameState.revealedAnswers.push(answer);
+    }
 
-    if (playerIndex !== undefined) {
+    const teamKey = data.team === "A" ? "teamA" : "teamB";
 
-      gameState[team === 'A' ? 'teamA' : 'teamB']
-        .playerScores[playerIndex] += answer.weight;
+    if (data.playerIndex !== undefined) {
+
+      gameState[teamKey].playerScores[data.playerIndex] += answer.weight;
+
+    } else {
+
+      gameState[teamKey].score += answer.weight;
 
     }
 
-    else {
+    io.emit("stateUpdate", gameState);
 
-      gameState[team === 'A' ? 'teamA' : 'teamB']
-        .score += answer.weight;
-
-    }
-
-    io.emit('stateUpdate', gameState);
-
-    io.emit('answerRevealed', { answer, team, playerIndex });
+    io.emit("answerRevealed", data);
 
   });
 
 
+  /* -----------------------------
+  TIMER
+  ------------------------------*/
 
-  socket.on('startTimer', (data) => {
+  socket.on("startTimer", (data) => {
 
-    if (timerInterval) clearInterval(timerInterval);
+    if (timerInterval) {
+      clearInterval(timerInterval);
+    }
 
     gameState.timer = data.duration || 60;
-
     gameState.timerRunning = true;
+
+    io.emit("timerUpdate", gameState.timer);
 
     timerInterval = setInterval(() => {
 
       gameState.timer--;
 
-      io.emit('timerUpdate', gameState.timer);
-
       if (gameState.timer <= 0) {
 
+        gameState.timer = 0;
         clearInterval(timerInterval);
-
         timerInterval = null;
-
         gameState.timerRunning = false;
 
-        io.emit('timerFinished');
+        io.emit("timerUpdate", 0);
+        io.emit("timerFinished");
+
+        return;
 
       }
 
-    }, 1000);
+      io.emit("timerUpdate", gameState.timer);
 
-    io.emit('timerUpdate', gameState.timer);
+    }, 1000);
 
   });
 
 
-
-  socket.on('stopTimer', () => {
+  socket.on("stopTimer", () => {
 
     if (timerInterval) {
-
       clearInterval(timerInterval);
-
       timerInterval = null;
-
     }
 
     gameState.timerRunning = false;
@@ -401,108 +410,98 @@ io.on('connection', (socket) => {
   });
 
 
-
-  socket.on('resetTimer', () => {
+  socket.on("resetTimer", () => {
 
     if (timerInterval) {
-
       clearInterval(timerInterval);
-
       timerInterval = null;
-
     }
 
     gameState.timer = 0;
-
     gameState.timerRunning = false;
 
-    io.emit('timerUpdate', 0);
+    io.emit("timerUpdate", 0);
 
   });
 
 
+  /* -----------------------------
+  SCREENS
+  ------------------------------*/
 
-  socket.on('showThankYou', () => {
+  socket.on("showThankYou", () => {
 
     gameState.showThankYou = true;
 
-    io.emit('showThankYouScreen', true);
+    io.emit("showThankYouScreen", true);
 
   });
 
 
-
-  socket.on('hideThankYou', () => {
+  socket.on("hideThankYou", () => {
 
     gameState.showThankYou = false;
 
-    io.emit('showThankYouScreen', false);
+    io.emit("showThankYouScreen", false);
 
   });
 
 
+  socket.on("showTeamScore", (data) => {
 
-  socket.on('showTeamScore', (data) => {
+    const team = data.team === "A" ? "teamA" : "teamB";
+    const t = gameState[team];
 
-    const team = data.team;
-
-    const teamData = team === 'A'
-      ? gameState.teamA
-      : gameState.teamB;
-
-    io.emit('showTeamScoreScreen', {
-
-      team,
-      name: teamData.name,
-      score: teamData.score,
-      playerScores: teamData.playerScores,
-      players: teamData.players
-
+    io.emit("showTeamScoreScreen", {
+      team: data.team,
+      name: t.name,
+      score: t.score,
+      playerScores: t.playerScores,
+      players: t.players
     });
 
   });
 
 
+  socket.on("checkFmWin", () => {
 
-  socket.on('showWinner', () => {
+    const combined =
+      gameState.teamA.playerScores[0] +
+      gameState.teamA.playerScores[1];
 
-    const a = gameState.teamA.score;
-    const b = gameState.teamB.score;
+    const won = combined >= 200;
 
-    const winner = a > b ? 'A' : b > a ? 'B' : 'tie';
-
-    io.emit('showWinnerScreen', {
-
-      winner,
-
+    io.emit("showWinnerScreen", {
+      winner: won ? "A" : "none",
       teamAName: gameState.teamA.name,
-      teamBName: gameState.teamB.name,
-
-      teamAScore: gameState.teamA.score,
-      teamBScore: gameState.teamB.score
-
+      teamAScore: combined,
+      combined: combined,
+      target: 200,
+      won: won
     });
 
   });
 
 
+  socket.on("hideRevealScreen", () => {
 
-  socket.on('hideRevealScreen', () => {
-
-    io.emit('hideRevealScreen');
+    io.emit("hideRevealScreen");
 
   });
 
 
+  socket.on("disconnect", () => {
 
-  socket.on('disconnect', () => {
-
-    console.log('Client disconnected:', socket.id);
+    console.log("Client disconnected:", socket.id);
 
   });
 
 });
 
+
+/* -----------------------------
+SERVER START
+------------------------------*/
 
 const PORT = process.env.PORT || 3001;
 

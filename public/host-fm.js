@@ -6,27 +6,24 @@ let currentQuestion = null;
 let revealedAnswers = [];
 let currentActivePlayer = 'none';
 
-/* -----------------------------
+
+/* =====================================================
 LOAD QUESTIONS
-------------------------------*/
+===================================================== */
 
 fetch('/questions/fm_questions.json')
     .then(r => r.json())
     .then(data => {
 
-        if (data.sets && data.sets.length > 0) {
-
-            fmQuestions = data.sets.flatMap(set => set.questions);
-
-        } else if (data.questions) {
-
+        if (data?.sets?.length) {
+            fmQuestions = data.sets.flatMap(set => set.questions || []);
+        }
+        else if (data?.questions) {
             fmQuestions = data.questions;
-
-        } else {
-
+        }
+        else {
             console.error('Unknown question format:', data);
             fmQuestions = [];
-
         }
 
         populateQuestionSelector();
@@ -35,13 +32,14 @@ fetch('/questions/fm_questions.json')
     .catch(err => console.error('Error loading FM questions:', err));
 
 
-/* -----------------------------
+/* =====================================================
 QUESTION SELECTOR
-------------------------------*/
+===================================================== */
 
 function populateQuestionSelector() {
 
     const selector = document.getElementById('questionSelector');
+    if (!selector) return;
 
     selector.innerHTML = '<option value="">Select a question...</option>';
 
@@ -50,8 +48,7 @@ function populateQuestionSelector() {
         const option = document.createElement('option');
 
         option.value = idx;
-
-        option.textContent = `Q${q.question_number}: ${q.question}`;
+        option.textContent = `Q${q.question_number ?? idx + 1}: ${q.question}`;
 
         selector.appendChild(option);
 
@@ -62,14 +59,15 @@ function populateQuestionSelector() {
 
 function selectQuestion() {
 
-    const idx = parseInt(document.getElementById('questionSelector').value);
+    const selector = document.getElementById('questionSelector');
+    if (!selector) return;
 
-    if (isNaN(idx)) return;
+    const idx = parseInt(selector.value);
+
+    if (isNaN(idx) || !fmQuestions[idx]) return;
 
     currentQuestionIndex = idx;
-
     currentQuestion = fmQuestions[idx];
-
     revealedAnswers = [];
 
     displayQuestion();
@@ -77,123 +75,121 @@ function selectQuestion() {
 }
 
 
-/* -----------------------------
+/* =====================================================
 DISPLAY QUESTION
-------------------------------*/
+===================================================== */
 
 function displayQuestion() {
 
     if (!currentQuestion) return;
 
-    document.getElementById('questionText').textContent = currentQuestion.question;
+    const qText = document.getElementById('questionText');
+    const answersList = document.getElementById('answersList');
+
+    if (qText) qText.textContent = currentQuestion.question;
 
     socket.emit("broadcastCurrentQuestion", currentQuestion);
 
-    const answersList = document.getElementById('answersList');
+    if (!answersList) return;
 
     answersList.innerHTML = '';
 
-    currentQuestion.answers.forEach((answer) => {
+    const answers = currentQuestion.answers || [];
+
+    answers.forEach(answer => {
 
         const revealedData = revealedAnswers.find(r => r.answer === answer.answer);
-
         const isRevealed = !!revealedData;
 
-        const safeAnswer = answer.answer.replace(/'/g, "\\'");
+        const safeAnswer = String(answer.answer)
+            .replace(/'/g, "\\'")
+            .replace(/"/g, '\\"');
 
-        const answerRow = document.createElement('div');
+        const row = document.createElement('div');
+        row.className = `answer-row ${isRevealed ? 'revealed' : ''}`;
 
-        answerRow.className = `answer-row ${isRevealed ? 'revealed' : ''}`;
+        let buttonsHTML = '';
 
-        const btnHtml = isRevealed
-            ? `<div style="color:#ff1744;font-weight:bold;">
-           Already selected by ${revealedData.team}${revealedData.playerIndex + 1}
-           </div>`
-            :
-            `
-        <button class="btn btn-small btn-team-a"
-        onclick="revealAnswer('A',0,'${safeAnswer}',${answer.weight})">A1</button>
+        if (isRevealed) {
 
-        <button class="btn btn-small btn-team-a"
-        onclick="revealAnswer('A',1,'${safeAnswer}',${answer.weight})">A2</button>
+            buttonsHTML = `
+            <div class="answer-selected">
+            Already selected by Player ${revealedData.playerIndex + 1}
+            </div>`;
 
-        <button class="btn btn-small btn-team-b"
-        onclick="revealAnswer('B',0,'${safeAnswer}',${answer.weight})">B1</button>
+        } else {
 
-        <button class="btn btn-small btn-team-b"
-        onclick="revealAnswer('B',1,'${safeAnswer}',${answer.weight})">B2</button>
-        `;
+            buttonsHTML = `
+            <button class="btn btn-small btn-team-a"
+            onclick="revealAnswer('A',0,'${safeAnswer}',${answer.weight})">P1</button>
 
-        answerRow.innerHTML = `
+            <button class="btn btn-small btn-team-a"
+            onclick="revealAnswer('A',1,'${safeAnswer}',${answer.weight})">P2</button>
+            `;
+
+        }
+
+        row.innerHTML = `
         <div class="answer-text">
         ${answer.answer}
-        <span class="answer-weight">(${answer.weight})</span>
+        <span class="answer-weight">(${answer.weight ?? ''})</span>
         </div>
 
         <div class="answer-buttons">
-        ${btnHtml}
+        ${buttonsHTML}
         </div>
         `;
 
-        answersList.appendChild(answerRow);
+        answersList.appendChild(row);
 
     });
 
 }
 
 
-/* -----------------------------
+/* =====================================================
 REVEAL ANSWER
-------------------------------*/
+===================================================== */
 
 function revealAnswer(team, playerIndex, answerText, weight) {
 
     if (currentActivePlayer === 'none') {
-
         alert('⚠️ Please select an Active Player first');
-
         return;
-
     }
 
-    const exists = revealedAnswers.find(a => a.answer === answerText);
+    if (!currentQuestion) return;
 
+    const exists = revealedAnswers.find(a => a.answer === answerText);
     if (exists) return;
 
     revealedAnswers.push({
-
         answer: answerText,
-        team: team,
-        playerIndex: playerIndex
-
+        team,
+        playerIndex
     });
 
     socket.emit('revealAnswer', {
-
         team,
         playerIndex,
-
         answer: {
             answer: answerText,
             weight: weight
         }
-
     });
 
     displayQuestion();
 
     setTimeout(() => {
-
         nextQuestion();
-
     }, 600);
 
 }
 
 
-/* -----------------------------
+/* =====================================================
 QUESTION NAVIGATION
-------------------------------*/
+===================================================== */
 
 function nextQuestion() {
 
@@ -201,12 +197,12 @@ function nextQuestion() {
 
         currentQuestionIndex++;
 
-        document.getElementById('questionSelector').value = currentQuestionIndex;
+        const selector = document.getElementById('questionSelector');
+        if (selector) selector.value = currentQuestionIndex;
 
         currentQuestion = fmQuestions[currentQuestionIndex];
 
         displayQuestion();
-
     }
 
 }
@@ -217,7 +213,8 @@ function prevQuestion() {
 
         currentQuestionIndex--;
 
-        document.getElementById('questionSelector').value = currentQuestionIndex;
+        const selector = document.getElementById('questionSelector');
+        if (selector) selector.value = currentQuestionIndex;
 
         currentQuestion = fmQuestions[currentQuestionIndex];
 
@@ -228,14 +225,13 @@ function prevQuestion() {
 }
 
 
-/* -----------------------------
-BOARD
-------------------------------*/
+/* =====================================================
+BOARD CONTROL
+===================================================== */
 
 function clearBoard() {
 
     revealedAnswers = [];
-
     socket.emit('clearBoard');
 
 }
@@ -243,150 +239,132 @@ function clearBoard() {
 function markCross() {
 
     if (currentActivePlayer === 'none') {
-
         alert('⚠️ Select Active Player first');
-
         return;
-
     }
 
     socket.emit('markCross');
 
     setTimeout(() => {
-
         nextQuestion();
-
     }, 600);
 
 }
 
 
-/* -----------------------------
-PLAYERS
-------------------------------*/
+/* =====================================================
+PLAYERS & TEAM SETUP
+===================================================== */
 
 function updatePlayers() {
 
-    const teamA = document.getElementById('teamA').value || 'Team A';
-
-    const teamB = document.getElementById('teamB').value || 'Team B';
+    const teamA = document.getElementById('teamA')?.value || 'Team A';
 
     const playersA = [
-
-        document.getElementById('playerA1').value || 'Player A1',
-
-        document.getElementById('playerA2').value || 'Player A2'
-
+        document.getElementById('playerA1')?.value || 'Player 1',
+        document.getElementById('playerA2')?.value || 'Player 2'
     ];
 
-    const playersB = [
-
-        document.getElementById('playerB1').value || 'Player B1',
-
-        document.getElementById('playerB2').value || 'Player B2'
-
-    ];
-
-    socket.emit('updateTeams', { teamA, teamB });
-
-    socket.emit('updatePlayers', { playersA, playersB });
+    socket.emit('updateTeams', { teamA, teamB: teamA });
+    socket.emit('updatePlayers', { playersA, playersB: playersA });
 
 }
 
 
-/* -----------------------------
-ACTIVE PLAYER
-------------------------------*/
+/* =====================================================
+ACTIVE PLAYER MANAGEMENT
+===================================================== */
 
 function setActivePlayer() {
 
-    const player = document.getElementById('activePlayerSelector').value;
+    const selector = document.getElementById('activePlayerSelector');
+    if (!selector) return;
+
+    const player = selector.value;
 
     socket.emit('setActivePlayer', { player });
 
+    currentActivePlayer = player;
+
     if (player !== 'none') {
-
         revealedAnswers = [];
-
         socket.emit('clearBoard');
-
     }
 
 }
 
 
-/* -----------------------------
-SCORE
-------------------------------*/
+/* =====================================================
+SCORE MANAGEMENT
+===================================================== */
 
 function addScore(team, playerIndex) {
 
-    const points = parseInt(document.getElementById('pointsInput').value) || 0;
+    const points = parseInt(document.getElementById('pointsInput')?.value) || 0;
 
     if (points > 0) {
-
         socket.emit('addScore', { team, playerIndex, points });
+    }
 
+}
+
+function deductScore(playerIndex) {
+
+    const points = parseInt(document.getElementById('pointsInput')?.value) || 0;
+
+    if (points > 0) {
+        socket.emit('addScore', { team: 'A', playerIndex, points: -points });
     }
 
 }
 
 
-/* -----------------------------
-TIMER
-------------------------------*/
+/* =====================================================
+TIMER MANAGEMENT
+===================================================== */
 
 function startTimer() {
 
-    const duration = parseInt(document.getElementById('timerInput').value) || 60;
+    const duration = parseInt(document.getElementById('timerInput')?.value) || 60;
 
     socket.emit('startTimer', { duration });
 
 }
 
 function stopTimer() {
-
     socket.emit('stopTimer');
-
 }
 
 function resetTimer() {
 
     socket.emit('resetTimer');
 
-    document.getElementById('timerDisplay').textContent = '00:00';
+    const timer = document.getElementById('timerDisplay');
+    if (timer) timer.textContent = '00:00';
 
 }
 
 
-/* -----------------------------
-END GAME
-------------------------------*/
+/* =====================================================
+END GAME & RESET
+===================================================== */
 
 function showTeamScore(team) {
-
     socket.emit('showTeamScore', { team });
-
 }
 
-function showWinner() {
-
-    socket.emit('showWinner');
-
+function checkWin() {
+    socket.emit('checkFmWin');
 }
 
 function hideRevealScreen() {
-
     socket.emit('hideRevealScreen');
-
 }
 
 function showThankYou() {
 
     if (confirm('End the game and show Thank You screen?')) {
-
         socket.emit('showThankYou');
-
     }
 
 }
@@ -395,63 +373,101 @@ function resetGame() {
 
     if (confirm("Reset entire game?")) {
 
+        /* FIX #1: Emit reset to server first */
         socket.emit("resetGame");
 
+        /* FIX #2: Clear local state */
         revealedAnswers = [];
 
-        document.getElementById("pointsInput").value = "0";
+        /* FIX #2: CRITICAL - Reset active player selector dropdown */
+        const selector = document.getElementById('activePlayerSelector');
+        if (selector) selector.value = 'none';
+
+        /* FIX #3: Reset currentActivePlayer state variable */
+        currentActivePlayer = 'none';
+
+        /* FIX #4: Reset points input */
+        const points = document.getElementById("pointsInput");
+        if (points) points.value = "0";
+
+        /* FIX #5: Reset timer display */
+        const timer = document.getElementById('timerDisplay');
+        if (timer) timer.textContent = '00:00';
+
+        /* FIX #6: Reset question selector */
+        const questionSelector = document.getElementById('questionSelector');
+        if (questionSelector) questionSelector.value = '';
+
+        /* FIX #7: Clear current question */
+        currentQuestion = null;
+        currentQuestionIndex = -1;
 
     }
 
 }
 
 
-/* -----------------------------
-SOCKET EVENTS
-------------------------------*/
+/* =====================================================
+SOCKET EVENT HANDLERS
+===================================================== */
 
 socket.on('timerUpdate', (seconds) => {
 
-    const mins = Math.floor(seconds / 60);
+    const safeSeconds = Number(seconds) || 0;
 
-    const secs = seconds % 60;
+    const mins = Math.floor(safeSeconds / 60);
+    const secs = safeSeconds % 60;
 
-    document.getElementById('timerDisplay').textContent =
-        `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    const timer = document.getElementById('timerDisplay');
 
-});
-
-
-socket.on('scoreUpdate', (scores) => {
-
-    document.getElementById('scoreA').value = scores.teamA;
-
-    document.getElementById('scoreB').value = scores.teamB;
+    if (timer) {
+        timer.textContent =
+            `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
 
 });
 
 
 socket.on('stateUpdate', (state) => {
 
-    document.getElementById('scoreA').value = state.teamA.score;
+    if (!state?.teamA) return;
 
-    document.getElementById('scoreB').value = state.teamB.score;
+    /* Update scores */
+    const p1 = state.teamA.playerScores?.[0] || 0;
+    const p2 = state.teamA.playerScores?.[1] || 0;
+    const combined = p1 + p2;
 
+    const scoreP1 = document.getElementById('scoreP1');
+    const scoreP2 = document.getElementById('scoreP2');
+    const scoreCombined = document.getElementById('scoreCombined');
+
+    if (scoreP1) scoreP1.textContent = p1;
+    if (scoreP2) scoreP2.textContent = p2;
+    if (scoreCombined) scoreCombined.textContent = combined;
+
+    /* Update active player */
     currentActivePlayer = state.activePlayer || 'none';
 
-    const sel = document.getElementById('activePlayerSelector');
-
-    if (sel && sel.value !== state.activePlayer) {
-
-        sel.value = state.activePlayer || 'none';
-
+    const selector = document.getElementById('activePlayerSelector');
+    if (selector && selector.value !== state.activePlayer) {
+        selector.value = state.activePlayer || 'none';
     }
 
 });
 
 
+/* =====================================================
+SOCKET CONNECTION
+===================================================== */
+
 socket.on('connect', () => {
-
     console.log('Connected to FM Host server');
+});
 
+socket.on('disconnect', () => {
+    console.log('Disconnected from FM Host server');
+});
+
+socket.on('reconnect', () => {
+    console.log('Reconnected to FM Host server');
 });

@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -10,53 +11,70 @@
     <link rel="stylesheet" href="style.css">
 
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+
 </head>
 
 <body>
 
-    <!-- STRIKE OVERLAY (for buzzer animation) -->
+    <!-- STRIKE OVERLAY -->
     <div id="massiveStrikeOverlay" class="massive-strike" style="display:none;">
         ✕
     </div>
 
-    <!-- CORNER LOGOS -->
+    <!-- HEADER -->
     <header class="global-header">
-        <img src="user_logo_left.png" alt="Logo Left" class="brand-logo">
-        <img src="user_logo_right.png" alt="Logo Right" class="brand-logo">
+
+        <img src="user_logo_left.png" alt="Left Logo" class="brand-logo">
+
+        <img src="user_logo_right.png" alt="Right Logo" class="brand-logo">
+
     </header>
 
-    <!-- CENTER TITLE -->
+    <!-- TITLE -->
     <div class="gala-title-container">
         <h2 class="gala-title">GENERATION GALA</h2>
     </div>
 
+    <!-- MAIN DISPLAY -->
     <div class="display-container">
 
         <!-- THANK YOU SCREEN -->
         <div id="thankYouScreen" class="thank-you-screen" style="display:none;">
+
             <div class="thank-you-content">
+
                 <h1 class="thank-you-title">THANK YOU</h1>
+
                 <h2 class="thank-you-subtitle">FOR PARTICIPATING</h2>
+
                 <p class="thank-you-event">Generation Gala</p>
+
             </div>
 
             <div class="confetti"></div>
+
         </div>
 
         <!-- CHANCE OVERLAY -->
         <div id="chanceOverlay" class="chance-overlay" style="display:none;">
+
             <div class="chance-content">
+
                 <h1 id="chanceMessageText" class="chance-title">
                     CHANCE TO TEAM
                 </h1>
+
             </div>
+
         </div>
 
         <!-- GAME SCREEN -->
         <div id="gameScreen" class="game-screen">
 
-            <!-- ROUND HEADER -->
-            <div class="header-title">FACE OFF</div>
+            <!-- ROUND TITLE -->
+            <div class="header-title" id="roundTitle">
+                FACE OFF
+            </div>
 
             <!-- SCOREBOARD -->
             <div class="scoreboard">
@@ -73,6 +91,7 @@
                     </div>
 
                     <div class="strikes">
+
                         <span id="strikesA">
 
                             <span class="strike empty">○</span>
@@ -80,6 +99,7 @@
                             <span class="strike empty">○</span>
 
                         </span>
+
                     </div>
 
                 </div>
@@ -105,6 +125,7 @@
                     </div>
 
                     <div class="strikes">
+
                         <span id="strikesB">
 
                             <span class="strike empty">○</span>
@@ -112,6 +133,7 @@
                             <span class="strike empty">○</span>
 
                         </span>
+
                     </div>
 
                 </div>
@@ -119,8 +141,16 @@
             </div>
 
             <!-- QUESTION DISPLAY -->
-            <div id="audienceQuestionDisplay" class="question-inline-display" style="display:none;">
-                <h3 id="questionText">Loading Question...</h3>
+            <div class="question-container">
+
+                <div id="audienceQuestionDisplay" class="question-inline-display" style="display:none;">
+
+                    <h3 id="questionText">
+                        Loading Question...
+                    </h3>
+
+                </div>
+
             </div>
 
             <!-- ANSWER BOARD -->
@@ -152,16 +182,7 @@
 
     </div>
 
-    <script src="display.js?v=7"></script>
-
-    <!-- FOOTER HIDDEN
-    <footer class="global-footer">
-        <div class="vsm-branding">
-            Made with <span class="heart-icon">❤️</span>
-            by VSM Generation Gala ● All Rights Reserved
-        </div>
-    </footer>
-    -->
+    <script src="display.js?v=8"></script>
 
 </body>
 

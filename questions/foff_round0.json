@@ -1,0 +1,93 @@
+{
+    "event_name": "Generation Gala - Round 0 Elimination",
+    "total_sets": 2,
+    "teams_per_match": 2,
+    "sets": [
+        {
+            "set_number": 1,
+            "questions": [
+                {
+                    "question": "Round 0 - Question 1 (Replace with your question)",
+                    "multiplier": 1,
+                    "answers": [
+                        {
+                            "answer": "Answer 1",
+                            "weight": 25
+                        },
+                        {
+                            "answer": "Answer 2",
+                            "weight": 20
+                        },
+                        {
+                            "answer": "Answer 3",
+                            "weight": 15
+                        },
+                        {
+                            "answer": "Answer 4",
+                            "weight": 12
+                        },
+                        {
+                            "answer": "Answer 5",
+                            "weight": 10
+                        },
+                        {
+                            "answer": "Answer 6",
+                            "weight": 8
+                        },
+                        {
+                            "answer": "Answer 7",
+                            "weight": 6
+                        },
+                        {
+                            "answer": "Answer 8",
+                            "weight": 4
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "set_number": 2,
+            "questions": [
+                {
+                    "question": "Round 0 - Question 2 (Replace with your question)",
+                    "multiplier": 1,
+                    "answers": [
+                        {
+                            "answer": "Answer 1",
+                            "weight": 25
+                        },
+                        {
+                            "answer": "Answer 2",
+                            "weight": 20
+                        },
+                        {
+                            "answer": "Answer 3",
+                            "weight": 15
+                        },
+                        {
+                            "answer": "Answer 4",
+                            "weight": 12
+                        },
+                        {
+                            "answer": "Answer 5",
+                            "weight": 10
+                        },
+                        {
+                            "answer": "Answer 6",
+                            "weight": 8
+                        },
+                        {
+                            "answer": "Answer 7",
+                            "weight": 6
+                        },
+                        {
+                            "answer": "Answer 8",
+                            "weight": 4
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
